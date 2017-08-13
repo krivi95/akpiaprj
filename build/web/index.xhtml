@@ -40,7 +40,7 @@
         <p:layout fullPage="true" >
             <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
 
-                <div style="color: #ffffff ;float:left" onclick="Home()">
+                <div style="color: #ffffff ;float:left">
                     <p>
                         <p:spacer width="20"></p:spacer> 
                         <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
@@ -68,7 +68,7 @@
                             <h:panelGrid columns="3">
                                 <p:commandLink action="Password">Promenite šifru</p:commandLink>
                                 <h:panelGroup><p:spacer width="2"></p:spacer></h:panelGroup>
-                                <p:commandLink action="Registration">Nemate nalog?</p:commandLink> 
+                                <p:commandLink action="#{loginController.toRegistration()}">Nemate nalog?</p:commandLink> 
                             </h:panelGrid>
                         </h:form>
                     </p:confirmDialog>
@@ -77,7 +77,10 @@
 
 
 
-            <p:layoutUnit position="center" gutter="0">    sadasdasdsa           
+            <p:layoutUnit position="center" gutter="0">                 
+                <center>
+                    <p:messages id="password_message" showDetail="true" autoUpdate="true" closable="true" />
+                </center>
             </p:layoutUnit>
 
 

@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Registracijae</title>
         <style>
@@ -36,9 +37,6 @@
         </style>
     </h:head>
     <h:body>
-        <h:form> 
-            <h:commandLink id="homebutton" action="home" style="display: none;" />
-        </h:form>
 
         <p:layout fullPage="true" >
             <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
@@ -53,7 +51,41 @@
 
 
             <p:layoutUnit position="center" gutter="0"> 
-               
+                <center>
+                    <h1>Registracija:</h1>
+                    <p:messages id="registration_message" showDetail="true" autoUpdate="true" closable="true" />
+                    <h:form>
+                        <h:panelGrid columns="2">
+                            Ime i prezime:
+                            <p:inputText value="#{loginController.name_new}" required="true" requiredMessage="Unesite ime i prezime." ></p:inputText>
+                            Pol:
+                            <p:selectOneButton value="#{loginController.gender_new}" required="true" requiredMessage="Izaberite pol.">
+                                <f:selectItem itemLabel="Muški" itemValue="M" />
+                                <f:selectItem itemLabel="Ženski" itemValue="Z" />                                
+                            </p:selectOneButton>
+                            Avio-kompanija:
+                            <p:selectOneMenu   value="#{loginController.airline_new}"  var="t" required="true" requiredMessage="Izaberite avio-kompaniju.">
+                                <f:selectItems value="#{loginController.airlineNames}"  />
+                            </p:selectOneMenu >
+                            Datum rođenja:
+                            <p:calendar value="#{loginController.birth_new}"  yearRange="1950:1999" navigator="true" pattern="yyyy-MMM-dd" required="true" requiredMessage="Izaberite datum rođenja."/>
+                            Korisničko ime:
+                            <p:inputText value="#{loginController.username_new}" required="true" requiredMessage="Unesite Korisničko ime." ></p:inputText>
+                            Lozinka:
+                            <p:password id="pwd1" value="#{loginController.password_new}" match="pwd2"  required="true" label="Nova lozinka 1"/>
+                            Ponovite lozinku:
+                            <p:password id="pwd2"   required="true" label="Nova lozinka 2"/>
+                            Tip korisnika:
+                            <p:selectOneMenu   value="#{loginController.type_new}"   required="true" requiredMessage="Izaberite tip korisnika.">
+                                <f:selectItem itemLabel="pilot" itemValue="pilot"  />
+                                <f:selectItem itemLabel="stjuardesa" itemValue="stjuardesa"  />
+                                <f:selectItem itemLabel="radnik" itemValue="radnik"  />
+                            </p:selectOneMenu >
+                        </h:panelGrid>
+                        <p:commandButton value="Potvrdi" action="#{loginController.register()}"  ></p:commandButton>
+                    </h:form>
+                </center>
+
             </p:layoutUnit>
 
 
