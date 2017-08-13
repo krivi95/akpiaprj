@@ -4,7 +4,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>Registracija</title>
+        <title>Registracijae</title>
         <style>
             .ui-layout-unit{
                 border: none;
@@ -19,29 +19,41 @@
                 font-family:  fantasy;
                 padding: 0;
                 margin:0;
+                color: #ffffff ;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
             }
         </style>
     </h:head>
     <h:body>
-        
+        <h:form> 
+            <h:commandLink id="homebutton" action="home" style="display: none;" />
+        </h:form>
+
         <p:layout fullPage="true" >
             <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
 
-                <div style="color: #ffffff ;float:left">
+                <div style="float:left">
                     <p>
-                        <p:spacer width="10"></p:spacer> Avio karte
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
                     </p>
                 </div>   
-
-
-
-
             </p:layoutUnit>
 
 
-            <p:layoutUnit position="center" gutter="0">
-                
-                #{loginController.username}
+            <p:layoutUnit position="center" gutter="0"> 
+               
             </p:layoutUnit>
 
 
@@ -52,7 +64,7 @@
             </p:layoutUnit>
 
         </p:layout>
-        
+
     </h:body>
 </html>
 

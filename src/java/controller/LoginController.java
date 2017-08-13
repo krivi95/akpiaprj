@@ -48,7 +48,9 @@ public class LoginController {
     public LoginController() {
     }
     
-    
+    public String Home(){
+        return "index";
+    }
     
     public String LogIn(){
         
