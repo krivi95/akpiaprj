@@ -36,7 +36,7 @@
         </style>
     </h:head>
     <h:body>
-        
+
         <p:layout fullPage="true" >
             <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
 
@@ -80,6 +80,104 @@
             <p:layoutUnit position="center" gutter="0">                 
                 <center>
                     <p:messages id="password_message" showDetail="true" autoUpdate="true" closable="true" />
+
+                    <h:form>
+                        <p:fieldset legend="Pretraga letova" toggleable="true" toggleSpeed="500">
+                            <p:selectOneRadio value="#{loginController.oneway}" >
+                                <f:selectItem itemLabel="Povratno putovanje" itemValue="false" />
+                                <f:selectItem itemLabel="Jedan smer" itemValue="true" />
+                                <f:ajax render="calendar" />
+                            </p:selectOneRadio>
+                            <h:panelGrid columns="2" >
+                                <p:autoComplete  value="#{loginController.from}" completeMethod="#{loginController.autocompleteMethod}" placeholder="Od" required="true" requiredMessage="Unesite polaznu destinaciju."/>
+                                <p:autoComplete  value="#{loginController.to}" completeMethod="#{loginController.autocompleteMethod}" placeholder="Do" required="true" requiredMessage="Unesite odredišnu destinaciju."/>
+                                <p:calendar value="#{loginController.date_from}" placeholder="Datum polaska" required="true" requiredMessage="Unesite datum polaska" />
+                                <h:panelGroup id="calendar">
+                                    <p:calendar  value="#{loginController.date_to}" rendered="#{not loginController.oneway}" placeholder="Datum polaska" required="true" requiredMessage="Unesite datum polaska" >#{loginController.date_from}</p:calendar>
+                                </h:panelGroup>
+                                <h:panelGroup>
+                                    Broj karata:
+                                    <p:spinner value="#{loginController.tickets}" size="1" min="1" max="8" />
+                                </h:panelGroup>
+                                <h:panelGroup>
+                                    Direktan let:
+                                    <p:selectBooleanCheckbox value="#{loginController.direct}" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+
+                            <p:commandButton value="Pretraži letove" actionListener="#{loginController.searchFlight()}">
+                                <f:ajax render="search" event="click" />
+                            </p:commandButton>
+                        </p:fieldset>
+                    </h:form>
+
+                    <h:form id="search">
+                        <p:outputPanel autoUpdate="true" rendered="#{loginController.show1}">
+                            <h1>#{loginController.from} - #{loginController.to}</h1>
+                            <p:dataTable value="#{loginController.searchedFlightsTo}" var="f" >
+                                <p:column headerText="Od">
+                                    #{f.airportFrom.city}
+                                </p:column>
+
+                                <p:column headerText="Od">
+                                    #{f.airportTo.city}
+                                </p:column>
+
+                                <p:column headerText="Polazak">
+                                    #{f.departureDate} - #{f.departureTime}
+                                </p:column>
+
+                                <p:column headerText="Avio prevoznik">
+                                    #{f.airplaneId.name}
+                                </p:column>
+
+                                <p:column headerText="Trajanje leta">
+                                    #{f.duration}
+                                </p:column>
+
+                                <p:column headerText="Slobodnih sedišta">
+
+                                </p:column>
+
+                                <p:column headerText="Cena">
+
+                                </p:column>
+
+                                <p:column headerText="Rezerviši">
+                                    <p:commandButton value="|" icon="ui-icon-cart" />
+                                    <h:commandLink actionListener="#{loginController.rezervisi(f)}" action="Reservation.xhtml" target="_blank">Rezervacija</h:commandLink>
+                                    
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </h:form>
+
+                    <h1>Današnji letovi</h1>
+                    <h:form>
+                        <p:dataTable value="#{loginController.flights}" var="f" >
+                            <p:column headerText="Od">
+                                #{f.airportFrom.city}
+                            </p:column>
+
+                            <p:column headerText="Od">
+                                #{f.airportTo.city}
+                            </p:column>
+
+                            <p:column headerText="Polazak">
+                                #{f.departureTime}
+                            </p:column>
+
+                            <p:column headerText="Avio prevoznik">
+                                #{f.airplaneId.name}
+                            </p:column>
+
+                            <p:column headerText="Trajanje leta">
+                                #{f.duration}
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>  
                 </center>
             </p:layoutUnit>
 

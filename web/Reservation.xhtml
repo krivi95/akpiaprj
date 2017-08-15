@@ -1,0 +1,210 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Rezervacija</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
+        <script>
+            function creditCardCheck() {
+                var valid = /^\d{4}-\d{4}-\d{4}-\d{4}$/;
+                var br = $('#broj').val();
+                if (!valid.test(br)) {
+                    PF('mglasspane').show();
+                }
+
+            }
+        </script>
+    </h:head>
+    <h:body>
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="color: #ffffff ;float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div> 
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="center" gutter="0">    
+                <center>
+                    <h:form >
+                        <p:fieldset legend="#{loginController.selectedFlight.airportFrom.city} - #{loginController.selectedFlight.airportTo.city}" toggleable="true" toggleSpeed="500">
+
+                            <h:panelGrid columns="2" cellpadding="5">
+
+                                <h:outputText value="Datum polaska:" />
+                                <h:outputText value="#{loginController.selectedFlight.departureDate}" />
+
+                                <h:outputText value="Vreme polaska:" />
+                                <h:outputText value="#{loginController.selectedFlight.departureTime}" />
+
+                                <h:outputText value="Polazni termilan i gate:" />
+                                <h:outputText value="#{loginController.selectedFlight.gateFrom.id}" />
+
+                                <h:outputText value="Dolazni terminal i gate:" />
+                                <h:outputText value="#{loginController.selectedFlight.gateTo.id}" />
+
+                                <h:outputText value="Broj karata:" />
+                                <h:outputText value="#" />
+
+                                <h:outputText value="Ukupno za placanje" />
+                                <h:outputText value="#" />
+
+                            </h:panelGrid>
+                        </p:fieldset>   
+                    </h:form>
+
+                    <p:dialog header="Greska" id="mglasspaneid" draggable="false" resizable="false"  widgetVar="mglasspane" style="height: 50px !important;" >
+                        <span id="loading" draggable="false" style="height: auto !important;">Unesite ispravan broj kreditne kartice!</span>
+                    </p:dialog>
+
+                    <h1>Gosti - popunite detalje</h1>
+                    <p:messages id="login_message" showDetail="true" autoUpdate="true" closable="true" />
+                    <h:form prependId="false">
+                        <h:panelGrid  columns="2">
+                            Broj kreditne kartice:
+                            <p:inputText id="broj" onblur="creditCardCheck()" placeholder="xxxx-xxxx-xxxx-xxxx" required="true" requiredMessage="Obavezno polje"/>
+                        </h:panelGrid>
+                        <h5>Osoba 1:</h5>
+                        <h:panelGrid>
+                            Ime i prezime:
+                            <p:inputText required="true" requiredMessage="Obavezno polje" />
+                            Broj pasoša:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid rendered="#{loginController.tickets>1}">
+                            <h5>Osoba 2:</h5>
+                            <h:panelGroup></h:panelGroup>
+                            Ime i prezime:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            Broj pasoša:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid rendered="#{loginController.tickets>2}">
+                            <h5>Osoba 3:</h5>
+                            <h:panelGroup></h:panelGroup>
+                            Ime i prezime:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            Broj pasoša:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid rendered="#{loginController.tickets>3}">
+                            <h5>Osoba 4:</h5>
+                            <h:panelGroup></h:panelGroup>
+                            Ime i prezime:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            Broj pasoša:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid rendered="#{loginController.tickets>4}">
+                            <h5>Osoba 5:</h5>
+                            <h:panelGroup></h:panelGroup>
+                            Ime i prezime:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            Broj pasoša:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid rendered="#{loginController.tickets>5}">
+                            <h5>Osoba 6:</h5>
+                            <h:panelGroup></h:panelGroup>
+                            Ime i prezime:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            Broj pasoša:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                        </h:panelGrid>
+
+                        <h:panelGrid rendered="#{loginController.tickets>6}">
+                            <h5>Osoba 7:</h5>
+                            <h:panelGroup></h:panelGroup>
+                            Ime i prezime:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            Broj pasoša:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                        </h:panelGrid>
+
+
+                        <h:panelGrid rendered="#{loginController.tickets>7}">
+                            <h5>Osoba 8:</h5>
+                            <h:panelGroup></h:panelGroup>
+                            Ime i prezime:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            Broj pasoša:
+                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                        </h:panelGrid>
+                        <br></br>
+                        <p:commandButton value="Potvrdi plaćanje" actionListener="#{loginController.buyTickets()}" icon="ui-icon-cart">
+                            <f:ajax render="tickets" event="click" />
+                        </p:commandButton>
+
+                    </h:form>    
+
+                    <br></br>
+
+                    <h:form id="tickets">
+                        <p:outputPanel rendered="#{loginController.showTickets}" autoUpdate="true">
+                            <p:dataTable style="width:350px;" id="tbl" var="t" value="#{loginController.ticketsCode}" >
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Broj karte" />
+                                    </f:facet>
+                                    <h:outputText value="#{t}" />
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </h:form>
+
+                </center>
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
+    </h:body>
+</html>
+
