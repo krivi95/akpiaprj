@@ -102,63 +102,63 @@
                         <h5>Osoba 1:</h5>
                         <h:panelGrid>
                             Ime i prezime:
-                            <p:inputText required="true" requiredMessage="Obavezno polje" />
+                            <p:inputText value="#{loginController.name1}" required="true" requiredMessage="Obavezno polje" />
                             Broj pasoša:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.passport1}" required="true" requiredMessage="Obavezno polje"/>
                         </h:panelGrid>
 
                         <h:panelGrid rendered="#{loginController.tickets>1}">
                             <h5>Osoba 2:</h5>
                             <h:panelGroup></h:panelGroup>
                             Ime i prezime:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.name2}" required="true" requiredMessage="Obavezno polje"/>
                             Broj pasoša:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.passport2}" required="true" requiredMessage="Obavezno polje"/>
                         </h:panelGrid>
 
                         <h:panelGrid rendered="#{loginController.tickets>2}">
                             <h5>Osoba 3:</h5>
                             <h:panelGroup></h:panelGroup>
                             Ime i prezime:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.name3}" required="true" requiredMessage="Obavezno polje"/>
                             Broj pasoša:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.passport3}" required="true" requiredMessage="Obavezno polje"/>
                         </h:panelGrid>
 
                         <h:panelGrid rendered="#{loginController.tickets>3}">
                             <h5>Osoba 4:</h5>
                             <h:panelGroup></h:panelGroup>
                             Ime i prezime:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.name4}" required="true" requiredMessage="Obavezno polje"/>
                             Broj pasoša:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.passport4}" required="true" requiredMessage="Obavezno polje"/>
                         </h:panelGrid>
 
                         <h:panelGrid rendered="#{loginController.tickets>4}">
                             <h5>Osoba 5:</h5>
                             <h:panelGroup></h:panelGroup>
                             Ime i prezime:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.name5}" required="true" requiredMessage="Obavezno polje"/>
                             Broj pasoša:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.passport5}" required="true" requiredMessage="Obavezno polje"/>
                         </h:panelGrid>
 
                         <h:panelGrid rendered="#{loginController.tickets>5}">
                             <h5>Osoba 6:</h5>
                             <h:panelGroup></h:panelGroup>
                             Ime i prezime:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.name6}" required="true" requiredMessage="Obavezno polje"/>
                             Broj pasoša:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.passport6}" required="true" requiredMessage="Obavezno polje"/>
                         </h:panelGrid>
 
                         <h:panelGrid rendered="#{loginController.tickets>6}">
                             <h5>Osoba 7:</h5>
                             <h:panelGroup></h:panelGroup>
                             Ime i prezime:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.name7}" required="true" requiredMessage="Obavezno polje"/>
                             Broj pasoša:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.passport7}" required="true" requiredMessage="Obavezno polje"/>
                         </h:panelGrid>
 
 
@@ -166,9 +166,9 @@
                             <h5>Osoba 8:</h5>
                             <h:panelGroup></h:panelGroup>
                             Ime i prezime:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.name8}" required="true" requiredMessage="Obavezno polje"/>
                             Broj pasoša:
-                            <p:inputText required="true" requiredMessage="Obavezno polje"/>
+                            <p:inputText value="#{loginController.passport8}" required="true" requiredMessage="Obavezno polje"/>
                         </h:panelGrid>
                         <br></br>
                         <p:commandButton value="Potvrdi plaćanje" actionListener="#{loginController.buyTickets()}" icon="ui-icon-cart">
@@ -181,12 +181,26 @@
 
                     <h:form id="tickets">
                         <p:outputPanel rendered="#{loginController.showTickets}" autoUpdate="true">
-                            <p:dataTable style="width:350px;" id="tbl" var="t" value="#{loginController.ticketsCode}" >
+                            <p:dataTable style="width:1200px;" id="tbl" var="t" value="#{loginController.ticketReservationList}" >
                                 <p:column>
                                     <f:facet name="header">
                                         <h:outputText value="Broj karte" />
                                     </f:facet>
-                                    <h:outputText value="#{t}" />
+                                    <h:outputText value="#{t.ticket}" />
+                                </p:column>
+                                
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Ime i prezime" />
+                                    </f:facet>
+                                    <h:outputText value="#{t.name}" />
+                                </p:column>
+                                
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Broj pasoša" />
+                                    </f:facet>
+                                    <h:outputText value="#{t.passport}" />
                                 </p:column>
 
                             </p:dataTable>

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import model.Airline;
 import model.Airport;
 import model.Flight;
+import model.Ticket;
 import model.User;
 import org.hibernate.Session;
 
@@ -69,6 +70,16 @@ public class LoginController {
     //reservation
     private List<Integer> ticketsCode;
     private boolean showTickets = false;
+    private String name1; private String passport1;
+    private String name2; private String passport2;
+    private String name3; private String passport3;
+    private String name4; private String passport4;
+    private String name5; private String passport5;
+    private String name6; private String passport6;
+    private String name7; private String passport7;
+    private String name8; private String passport8;
+    private List<String> names;
+    private List<String> passwports;
 
     public LoginController() {
 
@@ -131,6 +142,159 @@ public class LoginController {
         return "Registration";
     }
 
+    public static int getTicketId() {
+        return ticketId;
+    }
+
+    public static void setTicketId(int ticketId) {
+        LoginController.ticketId = ticketId;
+    }
+
+    public String getName1() {
+        return name1;
+    }
+
+    public void setName1(String name1) {
+        this.name1 = name1;
+    }
+
+    public String getPassport1() {
+        return passport1;
+    }
+
+    public void setPassport1(String passport1) {
+        this.passport1 = passport1;
+    }
+
+    public String getName2() {
+        return name2;
+    }
+
+    public void setName2(String name2) {
+        this.name2 = name2;
+    }
+
+    public String getPassport2() {
+        return passport2;
+    }
+
+    public void setPassport2(String passport2) {
+        this.passport2 = passport2;
+    }
+
+    public String getName3() {
+        return name3;
+    }
+
+    public void setName3(String name3) {
+        this.name3 = name3;
+    }
+
+    public String getPassport3() {
+        return passport3;
+    }
+
+    public void setPassport3(String passport3) {
+        this.passport3 = passport3;
+    }
+
+    public String getName4() {
+        return name4;
+    }
+
+    public void setName4(String name4) {
+        this.name4 = name4;
+    }
+
+    public String getPassport4() {
+        return passport4;
+    }
+
+    public void setPassport4(String passport4) {
+        this.passport4 = passport4;
+    }
+
+    public String getName5() {
+        return name5;
+    }
+
+    public void setName5(String name5) {
+        this.name5 = name5;
+    }
+
+    public String getPassport5() {
+        return passport5;
+    }
+
+    public void setPassport5(String passport5) {
+        this.passport5 = passport5;
+    }
+
+    public String getName6() {
+        return name6;
+    }
+
+    public void setName6(String name6) {
+        this.name6 = name6;
+    }
+
+    public String getPassport6() {
+        return passport6;
+    }
+
+    public void setPassport6(String passport6) {
+        this.passport6 = passport6;
+    }
+
+    public String getName7() {
+        return name7;
+    }
+
+    public void setName7(String name7) {
+        this.name7 = name7;
+    }
+
+    public String getPassport7() {
+        return passport7;
+    }
+
+    public void setPassport7(String passport7) {
+        this.passport7 = passport7;
+    }
+
+    public String getName8() {
+        return name8;
+    }
+
+    public void setName8(String name8) {
+        this.name8 = name8;
+    }
+
+    public String getPassport8() {
+        return passport8;
+    }
+
+    public void setPassport8(String passport8) {
+        this.passport8 = passport8;
+    }
+
+    public List<String> getNames() {
+        return names;
+    }
+
+    public void setNames(List<String> names) {
+        this.names = names;
+    }
+
+    public List<String> getPasswports() {
+        return passwports;
+    }
+
+    public void setPasswports(List<String> passwports) {
+        this.passwports = passwports;
+    }
+
+    
     public boolean isShowTickets() {
         return showTickets;
     }
@@ -418,16 +582,16 @@ public class LoginController {
         httpsession.setAttribute("currentuser", user);
 
         if (user.getType().equals("pilot")) {
-            return "pilot/home";
+            return "pilot-home";
         }
         if (user.getType().equals("stjuardesa")) {
-            return "fa/home";
+            return "fa-home";
         }
         if (user.getType().equals("admin")) {
-            return "admin/home";
+            return "admin-home";
         }
         if (user.getType().equals("radnik")) {
-            return "worker/home";
+            return "worker-home";
         }
 
         return "index";
@@ -519,9 +683,105 @@ public class LoginController {
     }
 
     public void searchFlight() {
+
         show1 = true;
-        if (oneway) {
-            //one way flight
+        show2=false;
+        showTickets=false;
+        //one way flight
+        if (direct) {
+            //direct one way flight
+            String start = "";
+            String finish = "";
+            for (Airport a : airports) {
+                if (this.from.toLowerCase().contains(a.getCity().toLowerCase())) {
+                    start = a.getIata();
+                }
+                if (this.to.toLowerCase().contains(a.getCity().toLowerCase())) {
+                    finish = a.getIata();
+                }
+            }
+
+            Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+
+            org.hibernate.Query query = session.createQuery("SELECT f FROM Flight f WHERE f.airportFrom = :start AND f.airportTo = :finish AND f.departureDate=:d");
+            query.setString("start", start);
+            query.setString("finish", finish);
+            query.setDate("d", date_from);
+
+            searchedFlightsTo = query.list();
+            session.getTransaction().commit();
+            session.close();
+
+            /*
+                ListIterator<Flight> iter = searchedFlightsTo.listIterator();
+                while (iter.hasNext()) {
+                    if (iter.next().getDepartureDate().compareTo(date_from) != 0) {
+                        iter.remove();
+                    }
+                }
+             */
+        } else {
+            //with layover flights
+            String start = "";
+            String finish = "";
+            for (Airport a : airports) {
+                if (this.from.toLowerCase().contains(a.getCity().toLowerCase())) {
+                    start = a.getIata();
+                }
+                if (this.to.toLowerCase().contains(a.getCity().toLowerCase())) {
+                    finish = a.getIata();
+                }
+            }
+
+            //direct flights only
+            Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            org.hibernate.Query query = session.createQuery("SELECT f FROM Flight f WHERE f.airportFrom = :start AND f.airportTo = :finish AND f.departureDate=:d");
+            query.setString("start", start);
+            query.setString("finish", finish);
+            query.setDate("d", date_from);
+            searchedFlightsTo = query.list();
+            session.getTransaction().commit();
+            session.close();
+
+            //layover flights only
+            session = hibernate.HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            query = session.createQuery("select f1,f2 from Flight f1, Flight f2 "
+                    + "where f1.airportFrom= :start AND f2.airportTo=:finish "
+                    + "AND f1.airportTo = f2.airportFrom AND f1.departureDate=:d AND f1.departureDate=:d ");
+            query.setString("start", start);
+            query.setString("finish", finish);
+            query.setDate("d", date_from);
+            List<Object> objs = query.list();
+            session.getTransaction().commit();
+            session.close();
+
+            for (Object obj : objs) {
+                Object[] o = (Object[]) obj;
+                Flight f1 = (Flight) o[0];
+                Flight f2 = (Flight) o[1];
+                Flight f = new Flight();
+                f.setDuration(f1.getDuration() + f2.getDuration());
+                f.setCompany(f1.getCompany());
+                f.setAirportFrom(f1.getAirportFrom());
+                f.setAirportTo(f2.getAirportTo());
+                f.setDepartureDate(f1.getDepartureDate());
+                f.setDepartureTime(f1.getDepartureTime());
+                f.setGateFrom(f1.getGateFrom());
+                f.setGateTo(f2.getGateTo());
+                searchedFlightsTo.add(f);
+
+                //TODO: slobona sedista
+                //TODO: cena
+                System.out.println(f1.getCompany());
+
+            }
+
+        }
+        if (!oneway) {
+            show2 = true;
             if (direct) {
                 //direct one way flight
                 String start = "";
@@ -539,11 +799,11 @@ public class LoginController {
                 session.beginTransaction();
 
                 org.hibernate.Query query = session.createQuery("SELECT f FROM Flight f WHERE f.airportFrom = :start AND f.airportTo = :finish AND f.departureDate=:d");
-                query.setString("start", start);
-                query.setString("finish", finish);
-                query.setDate("d", date_from);
+                query.setString("start", finish);
+                query.setString("finish", start);
+                query.setDate("d", date_to);
 
-                searchedFlightsTo = query.list();
+                searchedFlightsReturn = query.list();
                 session.getTransaction().commit();
                 session.close();
 
@@ -572,10 +832,10 @@ public class LoginController {
                 Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
                 session.beginTransaction();
                 org.hibernate.Query query = session.createQuery("SELECT f FROM Flight f WHERE f.airportFrom = :start AND f.airportTo = :finish AND f.departureDate=:d");
-                query.setString("start", start);
-                query.setString("finish", finish);
-                query.setDate("d", date_from);
-                searchedFlightsTo = query.list();
+                query.setString("start", finish);
+                query.setString("finish", start);
+                query.setDate("d", date_to);
+                searchedFlightsReturn = query.list();
                 session.getTransaction().commit();
                 session.close();
 
@@ -585,25 +845,35 @@ public class LoginController {
                 query = session.createQuery("select f1,f2 from Flight f1, Flight f2 "
                         + "where f1.airportFrom= :start AND f2.airportTo=:finish "
                         + "AND f1.airportTo = f2.airportFrom AND f1.departureDate=:d AND f1.departureDate=:d ");
-                query.setString("start", start);
-                query.setString("finish", finish);
-                query.setDate("d", date_from);
+                query.setString("start", finish);
+                query.setString("finish", start);
+                query.setDate("d", date_to);
                 List<Object> objs = query.list();
                 session.getTransaction().commit();
                 session.close();
 
                 for (Object obj : objs) {
                     Object[] o = (Object[]) obj;
-                    Flight f1 = (Flight)o[0];
-                    Flight f2 = (Flight)o[1];
-                    System.out.println("Dupli letovi: " + f1.getId() + " - " + f2.getId());
+                    Flight f1 = (Flight) o[0];
+                    Flight f2 = (Flight) o[1];
+                    Flight f = new Flight();
+                    f.setDuration(f1.getDuration() + f2.getDuration());
+                    f.setCompany(f1.getCompany());
+                    f.setAirportFrom(f1.getAirportFrom());
+                    f.setAirportTo(f2.getAirportTo());
+                    f.setDepartureDate(f1.getDepartureDate());
+                    f.setDepartureTime(f1.getDepartureTime());
+                    f.setGateFrom(f1.getGateFrom());
+                    f.setGateTo(f2.getGateTo());
+                    searchedFlightsReturn.add(f);
+
+                    //TODO: slobona sedista
+                    //TODO: cena
+                    System.out.println(f1.getCompany());
+
                 }
 
             }
-
-        } else {
-            //return flight also
-
         }
 
     }
@@ -625,13 +895,62 @@ public class LoginController {
         return "Reservation";
     }
 
+    
+    
+    private List<Ticket> ticketReservationList;
+    
     public void buyTickets() {
         ticketsCode = new ArrayList<Integer>();
         for (int i = 0; i < this.tickets; i++) {
             ticketsCode.add(ticketId);
+            ticketId++;
         }
-        ticketId++;
+        int size=ticketsCode.size();
+        
         showTickets = true;
+        names = new ArrayList<String>(size);
+        passwports = new ArrayList<String>(size);
+        names.add(name1); passwports.add(passport1);
+        if(name2!=null && !name2.isEmpty()){
+            names.add(name2); passwports.add(passport2);
+        }
+        if(name3!=null && !name3.isEmpty()){
+            names.add(name3); passwports.add(passport3);
+        }
+        if(name4!=null && !name4.isEmpty()){
+            names.add(name4); passwports.add(passport4);
+        }
+        if(name5!=null && !name5.isEmpty()){
+            names.add(name5); passwports.add(passport5);
+        }
+        if(name6!=null && !name6.isEmpty()){
+            names.add(name6); passwports.add(passport6);
+        }
+        if(name7!=null && !name7.isEmpty()){
+            names.add(name7); passwports.add(passport7);
+        }
+        if(name8!=null && !name8.isEmpty()){
+            names.add(name8); passwports.add(passport8);
+        }
+        
+        ticketReservationList = new ArrayList<Ticket>(size);
+        for(int i=0;i<size;i++){
+            Ticket t= new Ticket();
+            t.name=names.get(i);
+            t.passport=passwports.get(i);
+            t.ticket=ticketsCode.get(i).toString();
+            ticketReservationList.add(t);
+        }
+        
+        
+    }
+
+    public List<Ticket> getTicketReservationList() {
+        return ticketReservationList;
+    }
+
+    public void setTicketReservationList(List<Ticket> ticketReservationList) {
+        this.ticketReservationList = ticketReservationList;
     }
 
 }

@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Admin home</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="color: #ffffff ;float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div> 
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="center" gutter="0" >  
+                <h:form>  
+                    <p:growl id="messages"/>
+
+                    <p:menubar>
+                        <p:menuitem value="Korisnici" icon="ui-icon-person"   url="#" />                       
+
+                        <p:submenu label="Aerodromi" >
+                            <p:menuitem value="Dodaj novi" url="#" icon="ui-icon-contact" />
+                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" url="#"  />
+                        </p:submenu>
+
+                        <p:submenu label="Avio kompanije" >
+                            <p:menuitem value="Dodaj novu" url="#" icon="ui-icon-contact" />
+                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" url="#"  />
+                        </p:submenu>
+
+                        <p:submenu label="Piloti" >
+                            <p:menuitem value="Dodaj licencu" url="#" icon="ui-icon-contact" />
+                            <p:menuitem value="Pregled licenci" icon="ui-icon-zoomin" url="#"  />
+                        </p:submenu>
+                            
+                        <p:submenu label="Avioni" >
+                            <p:menuitem value="Dodaj novi" url="#"  />
+                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" url="#"  />
+                        </p:submenu>
+                            
+                        <p:submenu label="Letovi" >
+                            <p:menuitem value="Dodaj novu" url="#" icon="ui-icon-contact" />
+                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" url="#"  />
+                        </p:submenu>
+
+                        <f:facet name="options">
+                            <p:commandButton action="#{adminController.logOut()}" value="Logout" icon="ui-icon-extlink" />
+                        </f:facet>
+                    </p:menubar>
+                </h:form>
+                
+                <center>
+                    <h1>Zahtevi za registraciju:</h1>
+                    <h:form id="users">
+                        <p:dataTable value="#{adminController.unapprovedUsers}" var="u" id="users" >
+                            <p:column headerText="Ime i prezime:">
+                                #{u.name}
+                            </p:column>
+
+                            <p:column headerText="Datum rođenja:">
+                                #{u.birth}
+                            </p:column>
+
+                            <p:column headerText="Avio kompanija">
+                                #{u.airline.name}
+                            </p:column>
+
+                            <p:column headerText="Tip korisnika">
+                                #{u.type}
+                            </p:column>
+
+                            <p:column headerText="Korisničko ime">
+                                #{u.username}
+                            </p:column>
+                            
+                            <p:column headerText="Akcija">
+                                <p:commandButton value="Odobri" ajax="true" update="users" actionListener="#{adminController.approveUser(u)}"/>
+                                <p:commandButton value="Obriši" ajax="true" update="users" actionListener="#{adminController.deleteUser(u)}"/>
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+                </center>
+
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
+    </h:body>
+</html>
+

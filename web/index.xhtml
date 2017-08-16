@@ -105,9 +105,7 @@
                                 </h:panelGroup>
                             </h:panelGrid>
 
-                            <p:commandButton value="Pretraži letove" actionListener="#{loginController.searchFlight()}">
-                                <f:ajax render="search" event="click" />
-                            </p:commandButton>
+                            <p:commandButton ajax="true" update="search search1" value="Pretraži letove" actionListener="#{loginController.searchFlight()}"></p:commandButton>
                         </p:fieldset>
                     </h:form>
 
@@ -115,6 +113,48 @@
                         <p:outputPanel autoUpdate="true" rendered="#{loginController.show1}">
                             <h1>#{loginController.from} - #{loginController.to}</h1>
                             <p:dataTable value="#{loginController.searchedFlightsTo}" var="f" >
+                                <p:column headerText="Od">
+                                    #{f.airportFrom.city}
+                                </p:column>
+
+                                <p:column headerText="Od">
+                                    #{f.airportTo.city}
+                                </p:column>
+
+                                <p:column headerText="Polazak">
+                                    #{f.departureDate} - #{f.departureTime}
+                                </p:column>
+
+                                <p:column headerText="Avio prevoznik">
+                                    #{f.airplaneId.name}
+                                </p:column>
+
+                                <p:column headerText="Trajanje leta">
+                                    #{f.duration}
+                                </p:column>
+
+                                <p:column headerText="Slobodnih sedišta">
+
+                                </p:column>
+
+                                <p:column headerText="Cena">
+
+                                </p:column>
+
+                                <p:column headerText="Rezerviši">
+                                    <p:commandButton value="|" icon="ui-icon-cart" />
+                                    <h:commandLink actionListener="#{loginController.rezervisi(f)}" action="Reservation.xhtml" target="_blank">Rezervacija</h:commandLink>
+                                    
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </h:form>
+                    
+                    <h:form id="search1">
+                        <p:outputPanel autoUpdate="true" rendered="#{loginController.show2}">
+                            <h1>#{loginController.to} - #{loginController.from}</h1>
+                            <p:dataTable value="#{loginController.searchedFlightsReturn}" var="f" >
                                 <p:column headerText="Od">
                                     #{f.airportFrom.city}
                                 </p:column>
