@@ -57,6 +57,10 @@ public class Gate implements Serializable {
     private List<Flight> flightList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gateTo")
     private List<Flight> flightList1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gateFrom")
+    private List<FlightArchive> flightArchiveList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gateTo")
+    private List<FlightArchive> flightArchiveList1;
     @JoinColumn(name = "iata", referencedColumnName = "iata")
     @ManyToOne(optional = false)
     private Airport iata;
@@ -114,6 +118,24 @@ public class Gate implements Serializable {
 
     public void setFlightList1(List<Flight> flightList1) {
         this.flightList1 = flightList1;
+    }
+
+    @XmlTransient
+    public List<FlightArchive> getFlightArchiveList() {
+        return flightArchiveList;
+    }
+
+    public void setFlightArchiveList(List<FlightArchive> flightArchiveList) {
+        this.flightArchiveList = flightArchiveList;
+    }
+
+    @XmlTransient
+    public List<FlightArchive> getFlightArchiveList1() {
+        return flightArchiveList1;
+    }
+
+    public void setFlightArchiveList1(List<FlightArchive> flightArchiveList1) {
+        this.flightArchiveList1 = flightArchiveList1;
     }
 
     public Airport getIata() {

@@ -68,16 +68,16 @@ public class Airline implements Serializable {
     private String email;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
     private List<Flight> flightList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airplaneId")
-    private List<Flight> flightList1;
-    @OneToMany(mappedBy = "airline")
-    private List<Airplane> airplaneList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airline")
-    private List<User> userList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company")
+    private List<FlightArchive> flightArchiveList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "aRenting")
     private List<Rental> rentalList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "aOffering")
     private List<Rental> rentalList1;
+    @OneToMany(mappedBy = "airline")
+    private List<Airplane> airplaneList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airline")
+    private List<User> userList;
 
     public Airline() {
     }
@@ -144,30 +144,12 @@ public class Airline implements Serializable {
     }
 
     @XmlTransient
-    public List<Flight> getFlightList1() {
-        return flightList1;
+    public List<FlightArchive> getFlightArchiveList() {
+        return flightArchiveList;
     }
 
-    public void setFlightList1(List<Flight> flightList1) {
-        this.flightList1 = flightList1;
-    }
-
-    @XmlTransient
-    public List<Airplane> getAirplaneList() {
-        return airplaneList;
-    }
-
-    public void setAirplaneList(List<Airplane> airplaneList) {
-        this.airplaneList = airplaneList;
-    }
-
-    @XmlTransient
-    public List<User> getUserList() {
-        return userList;
-    }
-
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
+    public void setFlightArchiveList(List<FlightArchive> flightArchiveList) {
+        this.flightArchiveList = flightArchiveList;
     }
 
     @XmlTransient
@@ -186,6 +168,24 @@ public class Airline implements Serializable {
 
     public void setRentalList1(List<Rental> rentalList1) {
         this.rentalList1 = rentalList1;
+    }
+
+    @XmlTransient
+    public List<Airplane> getAirplaneList() {
+        return airplaneList;
+    }
+
+    public void setAirplaneList(List<Airplane> airplaneList) {
+        this.airplaneList = airplaneList;
+    }
+
+    @XmlTransient
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
     }
 
     @Override

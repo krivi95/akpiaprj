@@ -76,6 +76,12 @@ public class Airport implements Serializable {
     private List<Flight> flightList2;
     @OneToMany(mappedBy = "iata")
     private List<RadioTower> radioTowerList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airportFrom")
+    private List<FlightArchive> flightArchiveList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airportTo")
+    private List<FlightArchive> flightArchiveList1;
+    @OneToMany(mappedBy = "toEmergency")
+    private List<FlightArchive> flightArchiveList2;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "iata")
     private List<Gate> gateList;
 
@@ -177,6 +183,33 @@ public class Airport implements Serializable {
 
     public void setRadioTowerList(List<RadioTower> radioTowerList) {
         this.radioTowerList = radioTowerList;
+    }
+
+    @XmlTransient
+    public List<FlightArchive> getFlightArchiveList() {
+        return flightArchiveList;
+    }
+
+    public void setFlightArchiveList(List<FlightArchive> flightArchiveList) {
+        this.flightArchiveList = flightArchiveList;
+    }
+
+    @XmlTransient
+    public List<FlightArchive> getFlightArchiveList1() {
+        return flightArchiveList1;
+    }
+
+    public void setFlightArchiveList1(List<FlightArchive> flightArchiveList1) {
+        this.flightArchiveList1 = flightArchiveList1;
+    }
+
+    @XmlTransient
+    public List<FlightArchive> getFlightArchiveList2() {
+        return flightArchiveList2;
+    }
+
+    public void setFlightArchiveList2(List<FlightArchive> flightArchiveList2) {
+        this.flightArchiveList2 = flightArchiveList2;
     }
 
     @XmlTransient

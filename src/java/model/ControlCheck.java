@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ControlCheck.findAll", query = "SELECT c FROM ControlCheck c")
-    , @NamedQuery(name = "ControlCheck.findByFlighId", query = "SELECT c FROM ControlCheck c WHERE c.controlCheckPK.flighId = :flighId")
+    , @NamedQuery(name = "ControlCheck.findByFlightId", query = "SELECT c FROM ControlCheck c WHERE c.controlCheckPK.flightId = :flightId")
     , @NamedQuery(name = "ControlCheck.findByRadioTower", query = "SELECT c FROM ControlCheck c WHERE c.controlCheckPK.radioTower = :radioTower")
     , @NamedQuery(name = "ControlCheck.findByStatus", query = "SELECT c FROM ControlCheck c WHERE c.status = :status")
     , @NamedQuery(name = "ControlCheck.findByNumber", query = "SELECT c FROM ControlCheck c WHERE c.number = :number")})
@@ -40,7 +40,7 @@ public class ControlCheck implements Serializable {
     private String status;
     @Column(name = "number")
     private Integer number;
-    @JoinColumn(name = "fligh_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "flight_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Flight flight;
     @JoinColumn(name = "radio_tower", referencedColumnName = "name", insertable = false, updatable = false)
@@ -54,8 +54,8 @@ public class ControlCheck implements Serializable {
         this.controlCheckPK = controlCheckPK;
     }
 
-    public ControlCheck(int flighId, String radioTower) {
-        this.controlCheckPK = new ControlCheckPK(flighId, radioTower);
+    public ControlCheck(int flightId, String radioTower) {
+        this.controlCheckPK = new ControlCheckPK(flightId, radioTower);
     }
 
     public ControlCheckPK getControlCheckPK() {

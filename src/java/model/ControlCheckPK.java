@@ -21,8 +21,8 @@ public class ControlCheckPK implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "fligh_id")
-    private int flighId;
+    @Column(name = "flight_id")
+    private int flightId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
@@ -32,17 +32,17 @@ public class ControlCheckPK implements Serializable {
     public ControlCheckPK() {
     }
 
-    public ControlCheckPK(int flighId, String radioTower) {
-        this.flighId = flighId;
+    public ControlCheckPK(int flightId, String radioTower) {
+        this.flightId = flightId;
         this.radioTower = radioTower;
     }
 
-    public int getFlighId() {
-        return flighId;
+    public int getFlightId() {
+        return flightId;
     }
 
-    public void setFlighId(int flighId) {
-        this.flighId = flighId;
+    public void setFlightId(int flightId) {
+        this.flightId = flightId;
     }
 
     public String getRadioTower() {
@@ -56,7 +56,7 @@ public class ControlCheckPK implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (int) flighId;
+        hash += (int) flightId;
         hash += (radioTower != null ? radioTower.hashCode() : 0);
         return hash;
     }
@@ -68,7 +68,7 @@ public class ControlCheckPK implements Serializable {
             return false;
         }
         ControlCheckPK other = (ControlCheckPK) object;
-        if (this.flighId != other.flighId) {
+        if (this.flightId != other.flightId) {
             return false;
         }
         if ((this.radioTower == null && other.radioTower != null) || (this.radioTower != null && !this.radioTower.equals(other.radioTower))) {
@@ -79,7 +79,7 @@ public class ControlCheckPK implements Serializable {
 
     @Override
     public String toString() {
-        return "model.ControlCheckPK[ flighId=" + flighId + ", radioTower=" + radioTower + " ]";
+        return "model.ControlCheckPK[ flightId=" + flightId + ", radioTower=" + radioTower + " ]";
     }
     
 }

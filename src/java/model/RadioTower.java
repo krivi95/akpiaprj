@@ -32,7 +32,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "RadioTower.findAll", query = "SELECT r FROM RadioTower r")
-    , @NamedQuery(name = "RadioTower.findByName", query = "SELECT r FROM RadioTower r WHERE r.name = :name")})
+    , @NamedQuery(name = "RadioTower.findByName", query = "SELECT r FROM RadioTower r WHERE r.name = :name")
+    , @NamedQuery(name = "RadioTower.findByLongitude", query = "SELECT r FROM RadioTower r WHERE r.longitude = :longitude")
+    , @NamedQuery(name = "RadioTower.findByLatitude", query = "SELECT r FROM RadioTower r WHERE r.latitude = :latitude")})
 public class RadioTower implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +44,14 @@ public class RadioTower implements Serializable {
     @Size(min = 1, max = 30)
     @Column(name = "name")
     private String name;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "longitude")
+    private double longitude;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "latitude")
+    private double latitude;
     @JoinColumn(name = "iata", referencedColumnName = "iata")
     @ManyToOne
     private Airport iata;
@@ -55,12 +65,34 @@ public class RadioTower implements Serializable {
         this.name = name;
     }
 
+    public RadioTower(String name, double longitude, double latitude) {
+        this.name = name;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     public Airport getIata() {

@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Admin home</title>
+        <title>Pregled aerodroma</title>
         <style>
             .ui-layout-unit{
                 border: none;
@@ -58,22 +58,22 @@
                         <p:menuitem value="Korisnici" icon="ui-icon-person"   action="admin-home" />                       
 
                         <p:submenu label="Aerodromi" >
-                            <p:menuitem value="Dodaj novi" action="admin-airport-add" icon="ui-icon-contact" />
+                            <p:menuitem value="Dodaj novi"  icon="ui-icon-contact" action="admin-airport-add"/>
                             <p:menuitem value="Pregled" icon="ui-icon-zoomin" action="admin-airport-look"  />
                         </p:submenu>
 
-                         <p:menuitem value="Avio kompanije" action="admin-airline-look"  />
+                        <p:menuitem value="Avio kompanije" action="admin-airline-look"  />
 
                         <p:submenu label="Piloti" >
                             <p:menuitem value="Dodaj licencu"  icon="ui-icon-contact" action="admin-pilot-add"/>
-                            <p:menuitem value="Pregled licenci" icon="ui-icon-zoomin" action="admin-pilot-look"  />
+                            <p:menuitem value="Pregled licenci" icon="ui-icon-zoomin" action="admin-pilot-look" />
                         </p:submenu>
-                            
+
                         <p:submenu label="Avioni" >
                             <p:menuitem value="Dodaj novi" url="#"  />
                             <p:menuitem value="Pregled" icon="ui-icon-zoomin" url="#"  />
                         </p:submenu>
-                            
+
                         <p:submenu label="Letovi" >
                             <p:menuitem value="Dodaj novu" url="#" icon="ui-icon-contact" />
                             <p:menuitem value="Pregled" icon="ui-icon-zoomin" url="#"  />
@@ -84,39 +84,49 @@
                         </f:facet>
                     </p:menubar>
                 </h:form>
-                
+
                 <center>
-                    <h1>Zahtevi za registraciju:</h1>
-                    <h:form id="users">
-                        <p:dataTable value="#{adminController.unapprovedUsers}" var="u" id="users" >
-                            <p:column headerText="Ime i prezime:">
-                                #{u.name}
-                            </p:column>
+                    <p:messages id="companymsg" showDetail="true" autoUpdate="true" closable="true" />
+                    <h1>Pregled avio-kompanija:</h1>
+                    <h:form>
+                        <p:outputPanel autoUpdate="true">
+                            <p:dataTable value="#{adminController.airlines}" var="a"   >
+                                <p:column headerText="Naziv">
+                                    <p:inplace  editor="true">
+                                        <p:inputText value="#{a.name}"> </p:inputText>
+                                    </p:inplace>
+                                </p:column>
 
-                            <p:column headerText="Datum rođenja:">
-                                #{u.birth}
-                            </p:column>
+                                <p:column headerText="Lokacija">
+                                    <p:inplace  editor="true">
+                                        <p:inputText value="#{a.headquarters}"> </p:inputText>
+                                    </p:inplace>
+                                </p:column>
 
-                            <p:column headerText="Avio kompanija">
-                                #{u.airline.name}
-                            </p:column>
+                                <p:column headerText="Website">
+                                    <p:inplace  editor="true">
+                                        <p:inputText value="#{a.website}"> </p:inputText>
+                                    </p:inplace>
+                                </p:column>
 
-                            <p:column headerText="Tip korisnika">
-                                #{u.type}
-                            </p:column>
+                                <p:column headerText="email">
+                                    <p:inplace  editor="true">
+                                        <p:inputText value="#{a.email}"> </p:inputText>
+                                    </p:inplace>
+                                </p:column>
 
-                            <p:column headerText="Korisničko ime">
-                                #{u.username}
-                            </p:column>
-                            
-                            <p:column headerText="Akcija">
-                                <p:commandButton value="Odobri" ajax="true" update="users" actionListener="#{adminController.approveUser(u)}"/>
-                                <p:commandButton value="Obriši" ajax="true" update="users" actionListener="#{adminController.deleteUser(u)}"/>
-                            </p:column>
-
-                        </p:dataTable>
+                            </p:dataTable>
+                        </p:outputPanel>
+                        <br></br>
+                        <p:commandButton value="Sačuvaj izmene" action="#{adminController.saveCompanies()}"></p:commandButton>
                     </h:form>
+
                 </center>
+                <br></br>
+                <h:outputLink id="fade" value="#">
+                    <h:outputText value="Pomoć" />
+                </h:outputLink>
+                <p:tooltip id="toolTipFade" for="fade" value="Za izmene kliknite na polje koje želite da promenite" position="top"/>
             </p:layoutUnit>
 
 
@@ -130,4 +140,5 @@
         </p:layout>
     </h:body>
 </html>
+
 

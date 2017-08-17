@@ -35,7 +35,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Rental.findById", query = "SELECT r FROM Rental r WHERE r.id = :id")
     , @NamedQuery(name = "Rental.findByOffer", query = "SELECT r FROM Rental r WHERE r.offer = :offer")
     , @NamedQuery(name = "Rental.findByDateFrom", query = "SELECT r FROM Rental r WHERE r.dateFrom = :dateFrom")
-    , @NamedQuery(name = "Rental.findByDateTo", query = "SELECT r FROM Rental r WHERE r.dateTo = :dateTo")})
+    , @NamedQuery(name = "Rental.findByDateTo", query = "SELECT r FROM Rental r WHERE r.dateTo = :dateTo")
+    , @NamedQuery(name = "Rental.findByPending", query = "SELECT r FROM Rental r WHERE r.pending = :pending")})
 public class Rental implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -58,6 +59,10 @@ public class Rental implements Serializable {
     @Column(name = "date_to")
     @Temporal(TemporalType.DATE)
     private Date dateTo;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "pending")
+    private int pending;
     @JoinColumn(name = "a_renting", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Airline aRenting;
@@ -72,11 +77,12 @@ public class Rental implements Serializable {
         this.id = id;
     }
 
-    public Rental(Integer id, int offer, Date dateFrom, Date dateTo) {
+    public Rental(Integer id, int offer, Date dateFrom, Date dateTo, int pending) {
         this.id = id;
         this.offer = offer;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+        this.pending = pending;
     }
 
     public Integer getId() {
@@ -109,6 +115,14 @@ public class Rental implements Serializable {
 
     public void setDateTo(Date dateTo) {
         this.dateTo = dateTo;
+    }
+
+    public int getPending() {
+        return pending;
+    }
+
+    public void setPending(int pending) {
+        this.pending = pending;
     }
 
     public Airline getARenting() {
