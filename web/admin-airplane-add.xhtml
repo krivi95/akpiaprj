@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Dodavanje licenci</title>
+        <title>Dodaj avion</title>
         <style>
             .ui-layout-unit{
                 border: none;
@@ -62,7 +62,6 @@
 
             <p:layoutUnit position="center" gutter="0" >  
                 <h:form>  
-                    <p:growl id="messages"/>
 
                     <p:menubar>
                         <p:menuitem value="Korisnici" icon="ui-icon-person"   action="admin-home" />                       
@@ -96,29 +95,30 @@
                 </h:form>
 
                 <center>
-                    <p:messages id="error_message" showDetail="true" autoUpdate="true" closable="true" />
-
-                    <h1>Dodajte novu licencu pilotu:</h1>
+                    <p:messages id="avionmesasge" showDetail="true" autoUpdate="true" closable="true" />
+                    <h1>Dodaj novi avion:</h1>
                     <h:form>
                         <h:panelGrid columns="2">
-                            Izaberite pilota:
-                            <p:selectOneMenu  value="#{adminController.name}" var="p" required="true" requiredMessage="Izaberite pilota.">
-                                <f:selectItems value="#{adminController.pilotNames}"  />
-                            </p:selectOneMenu >
-                            Izaberite tip aviona:
-                            <p:selectOneMenu  value="#{adminController.model}" var="p" required="true" requiredMessage="Izaberite avion.">
+                            Oznaka:
+                            <p:inputText   value="#{adminController.airplane_name}" required="true" requiredMessage="Unesite oznaku aviona"></p:inputText>
+                            Model:
+                            <p:selectOneMenu  value="#{adminController.airplane_model}" var="p" required="true" requiredMessage="Izaberite avion.">
                                 <f:selectItems value="#{adminController.modelNames}"  />
                             </p:selectOneMenu >
-                            Broj licence:
-                            <p:inputText id="broj" placeholder="bbbbbbb"  value="#{adminController.licenceNo}" required="true" requiredMessage="Unesite sedmocifreni broj licence"></p:inputText>                           
+                            Broj sedišta:
+                            <p:inputNumber value="#{adminController.airplane_seats}" rendered="true" requiredMessage="Unesite boj sedista."></p:inputNumber>
                         </h:panelGrid>
-                        <p:commandButton value="Unesi" action="#{adminController.addLicence()}"></p:commandButton>
+                        <p:commandButton value="Unesi"  actionListener="#{adminController.addAirplane()}"></p:commandButton>
                     </h:form>
-                    
-                    <p:dialog header="Greska" id="mglasspaneid" draggable="false" resizable="false"  widgetVar="mglasspane" style="height: 50px !important;" >
-                        <span id="loading" draggable="false" style="height: auto !important;">Unesite ispravan broj licence!</span>
-                    </p:dialog>
 
+                    <h3>Izaberite sliku</h3>
+                    <p:outputPanel style="width:500px">
+                        <h:form enctype="multipart/form-data">
+                            <p:fileUpload value="#{adminController.picture}" mode="simple" dragDropSupport="true" skinSimple="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"/>
+                            <p:commandButton value="Upload" ajax="false" actionListener="#{adminController.uploadFile()}" />
+                        </h:form>
+
+                    </p:outputPanel>
 
                 </center>
             </p:layoutUnit>

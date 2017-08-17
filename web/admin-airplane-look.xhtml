@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Dodavanje licenci</title>
+        <title>Pregled Aviona</title>
         <style>
             .ui-layout-unit{
                 border: none;
@@ -98,26 +98,38 @@
                 <center>
                     <p:messages id="error_message" showDetail="true" autoUpdate="true" closable="true" />
 
-                    <h1>Dodajte novu licencu pilotu:</h1>
-                    <h:form>
-                        <h:panelGrid columns="2">
-                            Izaberite pilota:
-                            <p:selectOneMenu  value="#{adminController.name}" var="p" required="true" requiredMessage="Izaberite pilota.">
-                                <f:selectItems value="#{adminController.pilotNames}"  />
-                            </p:selectOneMenu >
-                            Izaberite tip aviona:
-                            <p:selectOneMenu  value="#{adminController.model}" var="p" required="true" requiredMessage="Izaberite avion.">
-                                <f:selectItems value="#{adminController.modelNames}"  />
-                            </p:selectOneMenu >
-                            Broj licence:
-                            <p:inputText id="broj" placeholder="bbbbbbb"  value="#{adminController.licenceNo}" required="true" requiredMessage="Unesite sedmocifreni broj licence"></p:inputText>                           
-                        </h:panelGrid>
-                        <p:commandButton value="Unesi" action="#{adminController.addLicence()}"></p:commandButton>
+                    <h1>Pregled aviona:</h1>
+                    <h:form> 
+                        <p:dataGrid value="#{adminController.airplanes}" var="a" columns="3" layout="grid">
+
+                                <h:panelGrid columns="3" style="width:100%" width="100%" >
+                                    <h:panelGroup>
+                                        <p:graphicImage value="resources/#{a.id}.jpg" height="150" width="400"/>
+                                        <p:graphicImage value="resources/#{a.id}.JPG" height="150" width="400"/>
+                                        <p:graphicImage value="resources/#{a.id}.png" height="150" width="400"/>
+                                        <p:graphicImage value="resources/#{a.id}.PNG" height="150" width="400"/>
+                                        <p:graphicImage value="resources/#{a.id}.jpeg" height="150" width="400"/>
+                                        <p:graphicImage value="resources/#{a.id}.JPEG" height="150" width="400"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <h:panelGrid columns="2" cellpadding="5">
+                                            <h:outputText value="Oznaka: " />
+                                            <h:outputText value="#{a.name}" style="font-weight: bold"/>
+
+                                            <h:outputText value="Model: " />
+                                            <h:outputText value="#{a.licence.MName.name} #{a.licence.name}" style="font-weight: bold"/>
+
+                                            <h:outputText value="Broj sedišta: " />
+                                            <h:outputText value="#{a.maxSeats}" style="font-weight: bold"/>
+
+                                            <h:outputText value="Avio kompanija: " />
+                                            <h:outputText value="#{a.airline.name}" style="font-weight: bold"/>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                        </p:dataGrid>
                     </h:form>
-                    
-                    <p:dialog header="Greska" id="mglasspaneid" draggable="false" resizable="false"  widgetVar="mglasspane" style="height: 50px !important;" >
-                        <span id="loading" draggable="false" style="height: auto !important;">Unesite ispravan broj licence!</span>
-                    </p:dialog>
+
 
 
                 </center>

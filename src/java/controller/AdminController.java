@@ -1,5 +1,13 @@
 package controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Named;
@@ -8,15 +16,20 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import model.Airline;
+import model.Airplane;
 import model.Airport;
 import model.Gate;
 import model.Licences;
 import model.Model;
 import model.RadioTower;
 import model.User;
+import org.apache.commons.io.FileUtils;
 import org.hibernate.Session;
+import org.primefaces.model.UploadedFile;
+import org.apache.commons.io.FilenameUtils;
 
 @Named(value = "adminController")
 @SessionScoped
@@ -27,11 +40,12 @@ public class AdminController {
     private List<User> unapprovedUsers = null;
     private List<Airport> airports = null;
     private List<Airline> airlines = null;
-    private List<Licences> licences=null;
-    private List<User> pilots=null;
-    private List<String> pilotNames=null;
+    private List<Licences> licences = null;
+    private List<User> pilots = null;
+    private List<String> pilotNames = null;
     private List<Model> models;
-    private List<String> modelNames=null;
+    private List<String> modelNames = null;
+    private List<Airplane> airplanes = null;
 
     //new airport data
     private String iata;
@@ -44,11 +58,66 @@ public class AdminController {
     private List<Gate> gates;
     private double longitude;
     private double latitude;
-    
+
     //new licence;
     private String name;
     private String licenceNo;
     private String model;
+
+    //new airplane
+    private String airplane_name;
+    private int airplane_seats;
+    private String airplane_model;
+    private String airplane_airline;
+    private UploadedFile picture;
+
+    public UploadedFile getPicture() {
+        return picture;
+    }
+
+    public void setPicture(UploadedFile picture) {
+        this.picture = picture;
+    }
+
+    public String getAirplane_name() {
+        return airplane_name;
+    }
+
+    public void setAirplane_name(String airplane_name) {
+        this.airplane_name = airplane_name;
+    }
+
+    public int getAirplane_seats() {
+        return airplane_seats;
+    }
+
+    public void setAirplane_seats(int airplane_seats) {
+        this.airplane_seats = airplane_seats;
+    }
+
+    public String getAirplane_model() {
+        return airplane_model;
+    }
+
+    public void setAirplane_model(String airplane_model) {
+        this.airplane_model = airplane_model;
+    }
+
+    public String getAirplane_airline() {
+        return airplane_airline;
+    }
+
+    public void setAirplane_airline(String airplane_airline) {
+        this.airplane_airline = airplane_airline;
+    }
+
+    public List<Airplane> getAirplanes() {
+        return airplanes;
+    }
+
+    public void setAirplanes(List<Airplane> airplanes) {
+        this.airplanes = airplanes;
+    }
 
     public String getModel() {
         return model;
@@ -57,7 +126,6 @@ public class AdminController {
     public void setModel(String model) {
         this.model = model;
     }
-    
 
     public List<Model> getModels() {
         return models;
@@ -90,8 +158,6 @@ public class AdminController {
     public void setLicenceNo(String licenceNo) {
         this.licenceNo = licenceNo;
     }
-    
-    
 
     public List<String> getPilotNames() {
         return pilotNames;
@@ -100,7 +166,6 @@ public class AdminController {
     public void setPilotNames(List<String> pilotNames) {
         this.pilotNames = pilotNames;
     }
-    
 
     public List<User> getPilots() {
         return pilots;
@@ -109,8 +174,6 @@ public class AdminController {
     public void setPilots(List<User> pilots) {
         this.pilots = pilots;
     }
-    
-    
 
     public List<Licences> getLicences() {
         return licences;
@@ -119,8 +182,6 @@ public class AdminController {
     public void setLicences(List<Licences> licences) {
         this.licences = licences;
     }
-    
-    
 
     public List<Airline> getAirlines() {
         return airlines;
@@ -249,28 +310,27 @@ public class AdminController {
         query = session.getNamedQuery("Airline.findAll");
         airlines = query.list();
         airlines.remove(8);
-        
+
         query = session.getNamedQuery("Licences.findAll");
         licences = query.list();
-        
+
         query = session.getNamedQuery("User.findByType");
         query.setString("type", "pilot");
-        pilots = query.list();   
+        pilots = query.list();
         pilotNames = new ArrayList<String>(licences.size());
-        for(User u : pilots){
+        for (User u : pilots) {
             pilotNames.add(u.getName());
         }
-        
+
         query = session.getNamedQuery("Model.findAll");
-        models = query.list();   
+        models = query.list();
         modelNames = new ArrayList<String>(models.size());
-        for(Model m : models){
+        for (Model m : models) {
             modelNames.add(m.getMName().getName() + " " + m.getName());
         }
-        
-        
-        
-        
+
+        query = session.getNamedQuery("Airplane.findAll");
+        airplanes = query.list();
 
         session.getTransaction().commit();
         session.close();
@@ -403,16 +463,20 @@ public class AdminController {
 
         return null;
     }
-    
-    public String addLicence(){
+
+    public String addLicence() {
         Licences l = new Licences();
-        for(User u: pilots){
-            if(u.getName().equals(name))l.setUser(u);
+        for (User u : pilots) {
+            if (u.getName().equals(name)) {
+                l.setUser(u);
+            }
         }
-        for(Model m: models){
-            if(model.contains(m.getName()))l.setLicenceNo(m.getLicence() + licenceNo);
+        for (Model m : models) {
+            if (model.contains(m.getName())) {
+                l.setLicenceNo(m.getLicence() + licenceNo);
+            }
         }
-        
+
         Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(l);
@@ -422,11 +486,65 @@ public class AdminController {
         session.close();
 
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Uspešno dodata licenca."));
-        
-        
 
         return null;
-        
+
+    }
+
+    public void uploadFile() throws IOException {
+        if (picture != null) {
+            ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            String realPath = ctx.getRealPath("/");
+            String filename = FilenameUtils.getName(picture.getFileName());
+            System.out.println(filename);
+            if (filename.endsWith("jpg") || filename.endsWith("png") || filename.endsWith("jpeg")) {
+                String end = "";
+                if (filename.endsWith("jpg")) {
+                    end = "jpg";
+                }
+                if (filename.endsWith("png")) {
+                    end = "png";
+                }
+                if (filename.endsWith("jpeg")) {
+                    end = "jpeg";
+                }
+                filename = a.getId() + "";
+                InputStream input = picture.getInputstream();
+                //OutputStream output = new FileOutputStream(new File("C:\\Users\\Korisnik\\Documents\\NetBeansProjects\\akpiaprj\\web\\resources", filename + "." + end));
+                File destFile = new File("C:\\Users\\Korisnik\\Documents\\NetBeansProjects\\akpiaprj\\web\\resources\\" + filename + "." + end);
+                FileUtils.copyInputStreamToFile(input, destFile);
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Uspresno dodata slika"));
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Samo jpeg, jpg i png fajlovi."));
+            }
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Dogodila se greska."));
+        }
+    }
+
+    private Airplane a;
+
+    public String addAirplane() {
+
+        a = new Airplane();
+        a.setMaxSeats(airplane_seats);
+        a.setName(airplane_name);
+        for (Model m : models) {
+            if (airplane_model.contains(m.getName())) {
+                a.setLicence(m);
+            }
+        }
+        Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        session.save(a);
+        session.getTransaction().commit();
+        session.close();
+
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Uspešno dodat novi avion."));
+
+        airplanes.add(a);
+
+        return null;
     }
 
 }
