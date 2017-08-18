@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -45,6 +46,20 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Flight.findByArrivalTime", query = "SELECT f FROM Flight f WHERE f.arrivalTime = :arrivalTime")
     , @NamedQuery(name = "Flight.findByCharter", query = "SELECT f FROM Flight f WHERE f.charter = :charter")})
 public class Flight implements Serializable {
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "price")
+    private double price;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "seats")
+    private int seats;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 30)
+    @Column(name = "status")
+    private String status;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -350,6 +365,30 @@ public class Flight implements Serializable {
     @Override
     public String toString() {
         return "model.Flight[ id=" + id + " ]";
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getSeats() {
+        return seats;
+    }
+
+    public void setSeats(int seats) {
+        this.seats = seats;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
     
 }

@@ -93,7 +93,7 @@
                                 <p:autoComplete  value="#{loginController.to}" completeMethod="#{loginController.autocompleteMethod}" placeholder="Do" required="true" requiredMessage="Unesite odredišnu destinaciju."/>
                                 <p:calendar value="#{loginController.date_from}" placeholder="Datum polaska" required="true" requiredMessage="Unesite datum polaska" />
                                 <h:panelGroup id="calendar">
-                                    <p:calendar  value="#{loginController.date_to}" rendered="#{not loginController.oneway}" placeholder="Datum polaska" required="true" requiredMessage="Unesite datum polaska" >#{loginController.date_from}</p:calendar>
+                                    <p:calendar  value="#{loginController.date_to}" rendered="#{not loginController.oneway}" placeholder="Datum povratka" required="true" requiredMessage="Unesite datum povratka" >#{loginController.date_from}</p:calendar>
                                 </h:panelGroup>
                                 <h:panelGroup>
                                     Broj karata:
@@ -134,23 +134,23 @@
                                 </p:column>
 
                                 <p:column headerText="Slobodnih sedišta">
-
+                                    #{f.seats}
                                 </p:column>
 
                                 <p:column headerText="Cena">
-
+                                    #{f.price}
                                 </p:column>
 
                                 <p:column headerText="Rezerviši">
                                     <p:commandButton value="|" icon="ui-icon-cart" />
                                     <h:commandLink actionListener="#{loginController.rezervisi(f)}" action="Reservation.xhtml" target="_blank">Rezervacija</h:commandLink>
-                                    
+
                                 </p:column>
 
                             </p:dataTable>
                         </p:outputPanel>
                     </h:form>
-                    
+
                     <h:form id="search1">
                         <p:outputPanel autoUpdate="true" rendered="#{loginController.show2}">
                             <h1>#{loginController.to} - #{loginController.from}</h1>
@@ -176,17 +176,17 @@
                                 </p:column>
 
                                 <p:column headerText="Slobodnih sedišta">
-
+                                    #{f.seats}
                                 </p:column>
 
                                 <p:column headerText="Cena">
-
+                                    #{f.price}
                                 </p:column>
 
                                 <p:column headerText="Rezerviši">
                                     <p:commandButton value="|" icon="ui-icon-cart" />
                                     <h:commandLink actionListener="#{loginController.rezervisi(f)}" action="Reservation.xhtml" target="_blank">Rezervacija</h:commandLink>
-                                    
+
                                 </p:column>
 
                             </p:dataTable>

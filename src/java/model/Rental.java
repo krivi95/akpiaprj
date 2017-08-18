@@ -69,6 +69,9 @@ public class Rental implements Serializable {
     @JoinColumn(name = "a_offering", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Airline aOffering;
+    @JoinColumn(name = "airplane", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Airplane airplane;
 
     public Rental() {
     }
@@ -139,6 +142,14 @@ public class Rental implements Serializable {
 
     public void setAOffering(Airline aOffering) {
         this.aOffering = aOffering;
+    }
+
+    public Airplane getAirplane() {
+        return airplane;
+    }
+
+    public void setAirplane(Airplane airplane) {
+        this.airplane = airplane;
     }
 
     @Override

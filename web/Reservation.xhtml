@@ -79,10 +79,10 @@
                                 <h:outputText value="#{loginController.selectedFlight.gateTo.id}" />
 
                                 <h:outputText value="Broj karata:" />
-                                <h:outputText value="#" />
+                                <h:outputText value="#{loginController.tickets}" />
 
                                 <h:outputText value="Ukupno za placanje" />
-                                <h:outputText value="#" />
+                                <h:outputText value="#{loginController.tickets * loginController.selectedFlight.price}" />
 
                             </h:panelGrid>
                         </p:fieldset>   

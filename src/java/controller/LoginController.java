@@ -16,6 +16,7 @@ import model.Airline;
 import model.Airport;
 import model.Flight;
 import model.Ticket;
+import model.Tickets;
 import model.User;
 import org.hibernate.Session;
 
@@ -70,14 +71,22 @@ public class LoginController {
     //reservation
     private List<Integer> ticketsCode;
     private boolean showTickets = false;
-    private String name1; private String passport1;
-    private String name2; private String passport2;
-    private String name3; private String passport3;
-    private String name4; private String passport4;
-    private String name5; private String passport5;
-    private String name6; private String passport6;
-    private String name7; private String passport7;
-    private String name8; private String passport8;
+    private String name1;
+    private String passport1;
+    private String name2;
+    private String passport2;
+    private String name3;
+    private String passport3;
+    private String name4;
+    private String passport4;
+    private String name5;
+    private String passport5;
+    private String name6;
+    private String passport6;
+    private String name7;
+    private String passport7;
+    private String name8;
+    private String passport8;
     private List<String> names;
     private List<String> passwports;
 
@@ -294,7 +303,6 @@ public class LoginController {
         this.passwports = passwports;
     }
 
-    
     public boolean isShowTickets() {
         return showTickets;
     }
@@ -685,8 +693,8 @@ public class LoginController {
     public void searchFlight() {
 
         show1 = true;
-        show2=false;
-        showTickets=false;
+        show2 = false;
+        showTickets = false;
         //one way flight
         if (direct) {
             //direct one way flight
@@ -771,6 +779,8 @@ public class LoginController {
                 f.setDepartureTime(f1.getDepartureTime());
                 f.setGateFrom(f1.getGateFrom());
                 f.setGateTo(f2.getGateTo());
+                f.setSeats(f1.getSeats());
+                f.setPrice(f1.getPrice() + f2.getPrice());
                 searchedFlightsTo.add(f);
 
                 //TODO: slobona sedista
@@ -865,6 +875,8 @@ public class LoginController {
                     f.setDepartureTime(f1.getDepartureTime());
                     f.setGateFrom(f1.getGateFrom());
                     f.setGateTo(f2.getGateTo());
+                    f.setSeats(f1.getSeats());
+                    f.setPrice(f1.getPrice() + f2.getPrice());
                     searchedFlightsReturn.add(f);
 
                     //TODO: slobona sedista
@@ -895,54 +907,146 @@ public class LoginController {
         return "Reservation";
     }
 
-    
-    
     private List<Ticket> ticketReservationList;
-    
+
     public void buyTickets() {
+
+        Tickets t1 = null;
+        Tickets t2 = null;
+        Tickets t3 = null;
+        Tickets t4 = null;
+        Tickets t5 = null;
+        Tickets t6 = null;
+        Tickets t7 = null;
+        Tickets t8 = null;
+
+        int size = tickets;
+
+        showTickets = true;
+        names = new ArrayList<String>(size);
+        passwports = new ArrayList<String>(size);
+        names.add(name1);
+        passwports.add(passport1);
+        t1 = new Tickets();
+        t1.setName(name1);
+        t1.setPassportNo(passport1);
+        if (name2 != null && !name2.isEmpty()) {
+            names.add(name2);
+            passwports.add(passport2);
+            t2 = new Tickets();
+            t2.setName(name2);
+            t2.setPassportNo(passport2);
+        }
+        if (name3 != null && !name3.isEmpty()) {
+            names.add(name3);
+            passwports.add(passport3);
+            t3 = new Tickets();
+            t3.setName(name3);
+            t3.setPassportNo(passport3);
+        }
+        if (name4 != null && !name4.isEmpty()) {
+            names.add(name4);
+            passwports.add(passport4);
+            t4 = new Tickets();
+            t4.setName(name4);
+            t4.setPassportNo(passport4);
+        }
+        if (name5 != null && !name5.isEmpty()) {
+            names.add(name5);
+            passwports.add(passport5);
+            t5 = new Tickets();
+            t5.setName(name5);
+            t5.setPassportNo(passport5);
+        }
+        if (name6 != null && !name6.isEmpty()) {
+            names.add(name6);
+            passwports.add(passport6);
+            t6 = new Tickets();
+            t6.setName(name6);
+            t6.setPassportNo(passport6);
+        }
+        if (name7 != null && !name7.isEmpty()) {
+            names.add(name7);
+            passwports.add(passport7);
+            t7 = new Tickets();
+            t7.setName(name7);
+            t7.setPassportNo(passport7);
+        }
+        if (name8 != null && !name8.isEmpty()) {
+            names.add(name8);
+            passwports.add(passport8);
+            t8 = new Tickets();
+            t8.setName(name8);
+            t8.setPassportNo(passport8);
+        }
+        //saving tickets in database
+        Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        if (t1 != null) {
+            session.save(t1);
+        }
+        if (t2 != null) {
+            session.save(t2);
+        }
+        if (t3 != null) {
+            session.save(t3);
+        }
+        if (t4 != null) {
+            session.save(t4);
+        }
+        if (t5 != null) {
+            session.save(t5);
+        }
+        if (t6 != null) {
+            session.save(t6);
+        }
+        if (t7 != null) {
+            session.save(t7);
+        }
+        if (t8 != null) {
+            session.save(t8);
+        }
+        selectedFlight.setSeats(selectedFlight.getSeats()-tickets);
+        //selectedFlight.setStatus(" ");
+        session.saveOrUpdate(selectedFlight);
+        session.getTransaction().commit();
+        session.close();
+
+        session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        org.hibernate.Query query = session.getNamedQuery("Tickets.findByPassportNo");
+        query.setString("passportNo", passport1);
+        List<Tickets> ttt = query.list();
+        ticketId = ttt.get(0).getTicketNo()+10000000;
+        session.getTransaction().commit();
+        session.close();
+        
+        
+
         ticketsCode = new ArrayList<Integer>();
         for (int i = 0; i < this.tickets; i++) {
             ticketsCode.add(ticketId);
             ticketId++;
         }
-        int size=ticketsCode.size();
-        
-        showTickets = true;
-        names = new ArrayList<String>(size);
-        passwports = new ArrayList<String>(size);
-        names.add(name1); passwports.add(passport1);
-        if(name2!=null && !name2.isEmpty()){
-            names.add(name2); passwports.add(passport2);
-        }
-        if(name3!=null && !name3.isEmpty()){
-            names.add(name3); passwports.add(passport3);
-        }
-        if(name4!=null && !name4.isEmpty()){
-            names.add(name4); passwports.add(passport4);
-        }
-        if(name5!=null && !name5.isEmpty()){
-            names.add(name5); passwports.add(passport5);
-        }
-        if(name6!=null && !name6.isEmpty()){
-            names.add(name6); passwports.add(passport6);
-        }
-        if(name7!=null && !name7.isEmpty()){
-            names.add(name7); passwports.add(passport7);
-        }
-        if(name8!=null && !name8.isEmpty()){
-            names.add(name8); passwports.add(passport8);
-        }
-        
+
         ticketReservationList = new ArrayList<Ticket>(size);
-        for(int i=0;i<size;i++){
-            Ticket t= new Ticket();
-            t.name=names.get(i);
-            t.passport=passwports.get(i);
-            t.ticket=ticketsCode.get(i).toString();
+        for (int i = 0; i < size; i++) {
+            Ticket t = new Ticket();
+            t.name = names.get(i);
+            t.passport = passwports.get(i);
+            t.ticket = ticketsCode.get(i).toString();
             ticketReservationList.add(t);
         }
-        
-        
+
+        t1 = null;
+        t2 = null;
+        t3 = null;
+        t4 = null;
+        t5 = null;
+        t6 = null;
+        t7 = null;
+        t8 = null;
+
     }
 
     public List<Ticket> getTicketReservationList() {
@@ -953,4 +1057,6 @@ public class LoginController {
         this.ticketReservationList = ticketReservationList;
     }
 
+    
+    
 }

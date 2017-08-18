@@ -36,8 +36,15 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Airplane.findAll", query = "SELECT a FROM Airplane a")
     , @NamedQuery(name = "Airplane.findById", query = "SELECT a FROM Airplane a WHERE a.id = :id")
     , @NamedQuery(name = "Airplane.findByName", query = "SELECT a FROM Airplane a WHERE a.name = :name")
-    , @NamedQuery(name = "Airplane.findByMaxSeats", query = "SELECT a FROM Airplane a WHERE a.maxSeats = :maxSeats")})
+    , @NamedQuery(name = "Airplane.findByMaxSeats", query = "SELECT a FROM Airplane a WHERE a.maxSeats = :maxSeats")
+    , @NamedQuery(name = "Airplane.findByRented", query = "SELECT a FROM Airplane a WHERE a.rented = :rented")})
 public class Airplane implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airplaneId")
+    private List<FlightArchive> flightArchiveList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airplaneId")
+    private List<Flight> flightList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -54,16 +61,21 @@ public class Airplane implements Serializable {
     @NotNull
     @Column(name = "max_seats")
     private int maxSeats;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airplaneId")
-    private List<Flight> flightList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airplaneId")
-    private List<FlightArchive> flightArchiveList;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "rented")
+    private int rented;
     @JoinColumn(name = "airline", referencedColumnName = "id")
     @ManyToOne
     private Airline airline;
     @JoinColumn(name = "licence", referencedColumnName = "licence")
     @ManyToOne(optional = false)
     private Model licence;
+    @JoinColumn(name = "airline_renting", referencedColumnName = "id")
+    @ManyToOne
+    private Airline airlineRenting;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "airplane")
+    private List<Rental> rentalList;
 
     public Airplane() {
     }
@@ -72,10 +84,11 @@ public class Airplane implements Serializable {
         this.id = id;
     }
 
-    public Airplane(Integer id, String name, int maxSeats) {
+    public Airplane(Integer id, String name, int maxSeats, int rented) {
         this.id = id;
         this.name = name;
         this.maxSeats = maxSeats;
+        this.rented = rented;
     }
 
     public Integer getId() {
@@ -102,22 +115,12 @@ public class Airplane implements Serializable {
         this.maxSeats = maxSeats;
     }
 
-    @XmlTransient
-    public List<Flight> getFlightList() {
-        return flightList;
+    public int getRented() {
+        return rented;
     }
 
-    public void setFlightList(List<Flight> flightList) {
-        this.flightList = flightList;
-    }
-
-    @XmlTransient
-    public List<FlightArchive> getFlightArchiveList() {
-        return flightArchiveList;
-    }
-
-    public void setFlightArchiveList(List<FlightArchive> flightArchiveList) {
-        this.flightArchiveList = flightArchiveList;
+    public void setRented(int rented) {
+        this.rented = rented;
     }
 
     public Airline getAirline() {
@@ -134,6 +137,23 @@ public class Airplane implements Serializable {
 
     public void setLicence(Model licence) {
         this.licence = licence;
+    }
+
+    public Airline getAirlineRenting() {
+        return airlineRenting;
+    }
+
+    public void setAirlineRenting(Airline airlineRenting) {
+        this.airlineRenting = airlineRenting;
+    }
+
+    @XmlTransient
+    public List<Rental> getRentalList() {
+        return rentalList;
+    }
+
+    public void setRentalList(List<Rental> rentalList) {
+        this.rentalList = rentalList;
     }
 
     @Override
@@ -159,6 +179,24 @@ public class Airplane implements Serializable {
     @Override
     public String toString() {
         return "model.Airplane[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<Flight> getFlightList() {
+        return flightList;
+    }
+
+    public void setFlightList(List<Flight> flightList) {
+        this.flightList = flightList;
+    }
+
+    @XmlTransient
+    public List<FlightArchive> getFlightArchiveList() {
+        return flightArchiveList;
+    }
+
+    public void setFlightArchiveList(List<FlightArchive> flightArchiveList) {
+        this.flightArchiveList = flightArchiveList;
     }
     
 }
