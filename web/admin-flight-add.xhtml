@@ -87,21 +87,128 @@
 
                 <center>
                     <p:messages id="sadsa" showDetail="true" autoUpdate="true" closable="true" />
-                    <h1>Licence:</h1>
+                    <h1>Dodajte novi let</h1>
+
                     <h:form>
-                        <p:outputPanel autoUpdate="true">
-                            <p:dataTable value="#{adminController.licences}" var="a"   >
-                                <p:column headerText="Pilot">
-                                    <p:outputLabel value="#{a.user.name}"> </p:outputLabel>
-                                </p:column>
+                        <p:wizard style="width: 800px" flowListener="#{adminController.onFlowProcess}">
+                            <p:tab id="id1" title="Osnovni podaci">
+                                <p:panel header="Unesite podatke">
+                                    <h:panelGrid columns="2">
+                                        Polazni aerodrom:
+                                        <p:selectOneMenu   value="#{adminController.flight_from}"  var="t" required="true" requiredMessage="Izaberite polazni aerodrom.">
+                                            <f:selectItems value="#{adminController.airpot_names}" actionListener="" />
+                                        </p:selectOneMenu >
+                                        Dolazni aerodrom:
+                                        <p:selectOneMenu   value="#{adminController.flight_to}"  var="t" required="true" requiredMessage="Izaberite dolazni aerodrom.">
+                                            <f:selectItems value="#{adminController.airpot_names}"  />
+                                        </p:selectOneMenu >
+                                        <p:calendar value="#{adminController.flight_date}" pattern="MM/dd/yyyy HH:mm:ss" placeholder="Datum i vreme polaska" required="true" requiredMessage="Unesite datum leta" />
+                                        <h:panelGroup>
+                                            Charter let:
+                                            <p:selectBooleanCheckbox value="#{adminController.charter}" />
+                                        </h:panelGroup>
+                                        Trajanje leta (min):
+                                        <h:panelGrid columns="1" style="margin-bottom: 10px">
+                                            <p:inputText id="txt3" value="#{adminController.duration}" />
+                                            <p:slider for="txt3" step="5" maxValue="600" />
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:panel>
 
-                                <p:column headerText="Licenca">
-                                    <p:outputLabel value="#{a.licenceNo}"> </p:outputLabel>
-                                </p:column>
+                            </p:tab>
 
-                            </p:dataTable>
-                        </p:outputPanel>
-                        <br></br>
+                            <p:tab id="id2" title="Detaljnije">
+                                <p:panel header="Unesite podatke">
+                                    <h:panelGrid columns="2">
+                                        Polazni gate:
+                                        <p:selectOneMenu   value="#{adminController.gate_from_selected}"  var="t" required="true" requiredMessage="Izaberite polazni gate.">
+                                            <f:selectItems value="#{adminController.gateFromNames}" actionListener="" />
+                                        </p:selectOneMenu >
+                                        Dolazni gate:
+                                        <p:selectOneMenu   value="#{adminController.gate_to_selected}"  var="t" required="true" requiredMessage="Izaberite dolazni gate.">
+                                            <f:selectItems value="#{adminController.gateToNames}" actionListener="" />
+                                        </p:selectOneMenu >
+                                        Cena karte:
+                                        <p:inputNumber value="#{adminController.price}" required="treu" requiredMessage="Unesite cenu karte." />
+                                        Izaberite avion:
+                                        <h:panelGrid>
+                                            <p:selectOneMenu  rendered="#{not adminController.charter}" value="#{adminController.airplane_name_selected}"  var="t" required="true" requiredMessage="Izaberite polazni gate.">
+                                                <f:selectItems value="#{adminController.airplanesRegularNames}" actionListener="" />
+                                            </p:selectOneMenu >
+                                            <p:selectOneMenu  rendered="#{adminController.charter}" value="#{adminController.airplane_name_selected}"  var="t" required="true" requiredMessage="Izaberite polazni gate.">
+                                                <f:selectItems value="#{adminController.airplanesCharterNames}" actionListener="" />
+                                            </p:selectOneMenu >
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:panel>                            
+                            </p:tab>
+
+                            <p:tab id="id3" title="Posada">
+                                <p:panel header="Izaberite posadu">
+                                    <h:panelGrid columns="2">
+                                        Kapetan:
+                                        <p:selectOneMenu   value="#{adminController.pilot1}"  var="t" required="true" requiredMessage="Izaberite kapetana leta.">
+                                            <f:selectItems value="#{adminController.pilotsFromSelectedAirline}"  />
+                                        </p:selectOneMenu >
+                                        Kopilot:
+                                        <p:selectOneMenu   value="#{adminController.pilot2}"  var="t" required="true" requiredMessage="Izaberite kopilota leta.">
+                                            <f:selectItems value="#{adminController.pilotsFromSelectedAirline}"  />
+                                        </p:selectOneMenu >
+                                        Stjurdesa 1: 
+                                        <p:selectOneMenu   value="#{adminController.fa1}"  var="t" required="true" requiredMessage="Izaberite stjuardesu (3 obavezno po letu)">
+                                            <f:selectItems value="#{adminController.faNames}"  />
+                                        </p:selectOneMenu >
+                                        Stjurdesa 2: 
+                                        <p:selectOneMenu   value="#{adminController.fa2}"  var="t" required="true" requiredMessage="Izaberite stjuardesu (3 obavezno po letu)">
+                                            <f:selectItems value="#{adminController.faNames}"  />
+                                        </p:selectOneMenu >
+                                        Stjurdesa 3: 
+                                        <p:selectOneMenu   value="#{adminController.fa3}"  var="t" required="true" requiredMessage="Izaberite stjuardesu (3 obavezno po letu)">
+                                            <f:selectItems value="#{adminController.faNames}"  />
+                                        </p:selectOneMenu >
+                                        Stjurdesa 4: 
+                                        <p:selectOneMenu   value="#{adminController.fa4}">
+                                            <f:selectItems value="#{adminController.faNames}"  />
+                                        </p:selectOneMenu >
+                                        Stjurdesa 5: 
+                                        <p:selectOneMenu   value="#{adminController.fa5}">
+                                            <f:selectItems value="#{adminController.faNames}"  />
+                                        </p:selectOneMenu >
+
+                                    </h:panelGrid>
+
+                                </p:panel>
+
+                            </p:tab>
+
+                            <p:tab id="id4" title="Komunikacija">
+                                <p:panel header="Izaberite radarske centre (pocetni i krajnji su vec dodati)">
+                                    <p:panel>
+                                        <p:selectOneMenu   value="#{adminController.radioTowerChosen}" required="true">
+                                            <f:selectItems value="#{adminController.radioTowerNames}"  />
+                                        </p:selectOneMenu >
+                                        <p:commandButton  value="Add" update="towers" action="#{adminController.reinitTower()}" >
+                                            <p:collector value="#{adminController.radioTower}" addTo="#{adminController.radioTowers}" unique="true"/>
+                                        </p:commandButton>
+                                    </p:panel>
+                                    <p:outputPanel id="towers">
+                                        <p:dataTable value="#{adminController.radioTowers}" var="t" >
+                                            <p:column headerText="Id">
+                                                <h:outputText value="#{t.name}" />
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:outputPanel>
+                                    Kraj unosa: 
+                                    <p:selectBooleanCheckbox value="#{adminController.showFinish}" >
+                                        <f:ajax render="ddd" />
+                                    </p:selectBooleanCheckbox>
+                                    <h:panelGroup id="ddd">
+                                        <p:commandButton  rendered="#{adminController.radioTowers.size()>2}" value="Kraj unosa"/>
+                                    </h:panelGroup>
+                                </p:panel>
+
+                            </p:tab>
+                        </p:wizard>
                     </h:form>
 
                 </center>

@@ -8,7 +8,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.inject.Named;
 import javax.enterprise.context.Dependent;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import model.Airline;
 import model.Airplane;
 import model.Airport;
+import model.Flight;
 import model.Gate;
 import model.Licences;
 import model.Model;
@@ -30,6 +34,7 @@ import org.apache.commons.io.FileUtils;
 import org.hibernate.Session;
 import org.primefaces.model.UploadedFile;
 import org.apache.commons.io.FilenameUtils;
+import org.primefaces.event.FlowEvent;
 
 @Named(value = "adminController")
 @SessionScoped
@@ -43,9 +48,10 @@ public class AdminController {
     private List<Licences> licences = null;
     private List<User> pilots = null;
     private List<String> pilotNames = null;
-    private List<Model> models;
+    private List<Model> models = null;
     private List<String> modelNames = null;
     private List<Airplane> airplanes = null;
+    private List<String> airpot_names = null;
 
     //new airport data
     private String iata;
@@ -70,6 +76,351 @@ public class AdminController {
     private String airplane_model;
     private String airplane_airline;
     private UploadedFile picture;
+
+    //new flight
+    private String flight_from;
+    private String flight_to;
+    private Date flight_date;
+    private boolean charter = false;
+    private int duration;
+    private List<Gate> gate_from;
+    private List<Gate> gate_to;
+    private List<String> gateFromNames;
+    private List<String> gateToNames;
+    private String gate_from_selected;
+    private String gate_to_selected;
+    private double price;
+    private Airplane airplane_selected;
+    private String airplane_name_selected;
+    private List<Airplane> airplanesRegular;
+    private List<Airplane> airplanesCharter;
+    private List<String> airplanesRegularNames;
+    private List<String> airplanesCharterNames;
+    private List<String> pilotsFromSelectedAirline;
+    private List<User> fa = null;
+    private List<String> faNames = null;
+    private String pilot1 = null;
+    private String pilot2 = null;
+    private String fa1 = null;
+    private String fa2 = null;
+    private String fa3 = null;
+    private String fa4 = null;
+    private String fa5 = null;
+    private int numOfRadioTowers=3;
+    private List<RadioTower> radioTowers=null;
+    private RadioTower radioTower;
+    private List<String> radioTowerNames=null;
+    private String radioTowerChosen;
+    private List<RadioTower> allRadioTowers=null;
+    private boolean showFinish=false;
+
+    public boolean isShowFinish() {
+        return showFinish;
+    }
+
+    public void setShowFinish(boolean showFinish) {
+        this.showFinish = showFinish;
+    }
+    
+
+    public String getRadioTowerChosen() {
+        return radioTowerChosen;
+    }
+
+    public void setRadioTowerChosen(String radioTowerChosen) {
+        this.radioTowerChosen = radioTowerChosen;
+    }
+    
+
+    public int getNumOfRadioTowers() {
+        return numOfRadioTowers;
+    }
+
+    public void setNumOfRadioTowers(int numOfRadioTowers) {
+        this.numOfRadioTowers = numOfRadioTowers;
+    }
+
+    public List<RadioTower> getRadioTowers() {
+        return radioTowers;
+    }
+
+    public void setRadioTowers(List<RadioTower> radioTowers) {
+        this.radioTowers = radioTowers;
+    }
+
+    public RadioTower getRadioTower() {
+        return radioTower;
+    }
+
+    public void setRadioTower(RadioTower radioTower) {
+        this.radioTower = radioTower;
+    }
+
+    public List<String> getRadioTowerNames() {
+        return radioTowerNames;
+    }
+
+    public void setRadioTowerNames(List<String> radioTowerNames) {
+        this.radioTowerNames = radioTowerNames;
+    }
+    
+    
+
+    public List<String> getPilotsFromSelectedAirline() {
+        return pilotsFromSelectedAirline;
+    }
+
+    public void setPilotsFromSelectedAirline(List<String> pilotsFromSelectedAirline) {
+        this.pilotsFromSelectedAirline = pilotsFromSelectedAirline;
+    }
+
+    public List<User> getFa() {
+        return fa;
+    }
+
+    public void setFa(List<User> fa) {
+        this.fa = fa;
+    }
+
+    public List<String> getFaNames() {
+        return faNames;
+    }
+
+    public void setFaNames(List<String> faNames) {
+        this.faNames = faNames;
+    }
+
+    public String getPilot1() {
+        return pilot1;
+    }
+
+    public void setPilot1(String pilot1) {
+        this.pilot1 = pilot1;
+    }
+
+    public String getPilot2() {
+        return pilot2;
+    }
+
+    public void setPilot2(String pilot2) {
+        this.pilot2 = pilot2;
+    }
+
+    public String getFa1() {
+        return fa1;
+    }
+
+    public void setFa1(String fa1) {
+        this.fa1 = fa1;
+    }
+
+    public String getFa2() {
+        return fa2;
+    }
+
+    public void setFa2(String fa2) {
+        this.fa2 = fa2;
+    }
+
+    public String getFa3() {
+        return fa3;
+    }
+
+    public void setFa3(String fa3) {
+        this.fa3 = fa3;
+    }
+
+    public String getFa4() {
+        return fa4;
+    }
+
+    public void setFa4(String fa4) {
+        this.fa4 = fa4;
+    }
+
+    public String getFa5() {
+        return fa5;
+    }
+
+    public void setFa5(String fa5) {
+        this.fa5 = fa5;
+    }
+
+    public String getAirplane_name_selected() {
+        return airplane_name_selected;
+    }
+
+    public void setAirplane_name_selected(String airplane_name_selected) {
+        this.airplane_name_selected = airplane_name_selected;
+    }
+
+    public List<String> getAirplanesRegularNames() {
+        return airplanesRegularNames;
+    }
+
+    public void setAirplanesRegularNames(List<String> airplanesRegularNames) {
+        this.airplanesRegularNames = airplanesRegularNames;
+    }
+
+    public List<String> getAirplanesCharterNames() {
+        return airplanesCharterNames;
+    }
+
+    public void setAirplanesCharterNames(List<String> airplanesCharterNames) {
+        this.airplanesCharterNames = airplanesCharterNames;
+    }
+
+    public Airport getFlight_selected_Airport_From() {
+        return flight_selected_Airport_From;
+    }
+
+    public void setFlight_selected_Airport_From(Airport flight_selected_Airport_From) {
+        this.flight_selected_Airport_From = flight_selected_Airport_From;
+    }
+
+    public Airport getFlight_selected_Airport_To() {
+        return flight_selected_Airport_To;
+    }
+
+    public void setFlight_selected_Airport_To(Airport flight_selected_Airport_To) {
+        this.flight_selected_Airport_To = flight_selected_Airport_To;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public Airplane getAirplane_selected() {
+        return airplane_selected;
+    }
+
+    public void setAirplane_selected(Airplane airplane_selected) {
+        this.airplane_selected = airplane_selected;
+    }
+
+    public List<Airplane> getAirplanesRegular() {
+        return airplanesRegular;
+    }
+
+    public void setAirplanesRegular(List<Airplane> airplanesRegular) {
+        this.airplanesRegular = airplanesRegular;
+    }
+
+    public List<Airplane> getAirplanesCharter() {
+        return airplanesCharter;
+    }
+
+    public void setAirplanesCharter(List<Airplane> airplanesCharter) {
+        this.airplanesCharter = airplanesCharter;
+    }
+
+    public List<Gate> getGate_from() {
+        return gate_from;
+    }
+
+    public void setGate_from(List<Gate> gate_from) {
+        this.gate_from = gate_from;
+    }
+
+    public List<Gate> getGate_to() {
+        return gate_to;
+    }
+
+    public void setGate_to(List<Gate> gate_to) {
+        this.gate_to = gate_to;
+    }
+
+    public List<String> getGateFromNames() {
+        return gateFromNames;
+    }
+
+    public void setGateFromNames(List<String> gateFromNames) {
+        this.gateFromNames = gateFromNames;
+    }
+
+    public List<String> getGateToNames() {
+        return gateToNames;
+    }
+
+    public void setGateToNames(List<String> gateToNames) {
+        this.gateToNames = gateToNames;
+    }
+
+    public String getGate_from_selected() {
+        return gate_from_selected;
+    }
+
+    public void setGate_from_selected(String gate_from_selected) {
+        this.gate_from_selected = gate_from_selected;
+    }
+
+    public String getGate_to_selected() {
+        return gate_to_selected;
+    }
+
+    public void setGate_to_selected(String gate_to_selected) {
+        this.gate_to_selected = gate_to_selected;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public String getFlight_from() {
+        return flight_from;
+    }
+
+    public void setFlight_from(String flight_from) {
+        this.flight_from = flight_from;
+    }
+
+    public String getFlight_to() {
+        return flight_to;
+    }
+
+    public void setFlight_to(String flight_to) {
+        this.flight_to = flight_to;
+    }
+
+    public Date getFlight_date() {
+        return flight_date;
+    }
+
+    public void setFlight_date(Date flight_date) {
+        this.flight_date = flight_date;
+    }
+
+    public boolean isCharter() {
+        return charter;
+    }
+
+    public void setCharter(boolean charter) {
+        this.charter = charter;
+    }
+
+    public Airplane getA() {
+        return a;
+    }
+
+    public void setA(Airplane a) {
+        this.a = a;
+    }
+
+    public List<String> getAirpot_names() {
+        return airpot_names;
+    }
+
+    public void setAirpot_names(List<String> airpot_names) {
+        this.airpot_names = airpot_names;
+    }
 
     public UploadedFile getPicture() {
         return picture;
@@ -306,6 +657,10 @@ public class AdminController {
 
         query = session.getNamedQuery("Airport.findAll");
         airports = query.list();
+        airpot_names = new ArrayList<String>();
+        for (Airport a : airports) {
+            airpot_names.add(a.getCity() + " (" + a.getIata() + ")");
+        }
 
         query = session.getNamedQuery("Airline.findAll");
         airlines = query.list();
@@ -429,8 +784,22 @@ public class AdminController {
 
     public String reinit() {
         gate.setIata(newAirport);
-        gate.setId(iata + " " + gate.getTerminalNo() + " " + gate.getGate());
+        gate.setId(iata.toUpperCase() + " T" + gate.getTerminalNo() + " " + gate.getGate());
         gate = new Gate();
+        return null;
+    }
+    
+    public String reinitTower() {
+        for(RadioTower r: allRadioTowers){
+            if(radioTowerChosen.equals(r.getName())) {
+                radioTower.setIata(r.getIata());
+                radioTower.setLatitude(r.getLatitude());
+                radioTower.setLongitude(r.getLongitude());
+                radioTower.setName(r.getName());
+                break;
+            }
+        }
+        radioTower = new RadioTower();
         return null;
     }
 
@@ -545,6 +914,234 @@ public class AdminController {
         airplanes.add(a);
 
         return null;
+    }
+
+    public String onFlowProcess(FlowEvent event) {
+        loadFromGates();
+        loadtoGates();
+        checkForRunwayOverloadFrom();
+        checkForRunwayOverloadTo();
+        sortAirplanes();
+        setTheCrew();
+        showFinish=false;
+        return event.getNewStep();
+    }
+
+    public void checkForRunwayOverloadFrom() {
+        Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        org.hibernate.Query query = session.createQuery("SELECT f FROM Flight f WHERE f.airportFrom =:airportFrom AND f.departureDate = :departureDate");
+        query.setEntity("airportFrom", flight_selected_Airport_From);
+        query.setDate("departureDate", flight_date);
+        List<Flight> f1 = query.list();
+        session.getTransaction().commit();
+        session.close();
+
+        int num = 0;
+        for (Flight f : f1) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(f.getDepartureTime());
+            int hour1 = cal.get(Calendar.HOUR);
+            int min1 = cal.get(Calendar.MINUTE);
+            cal.setTime(flight_date);
+            int hour2 = cal.get(Calendar.HOUR);
+            int min2 = cal.get(Calendar.MINUTE);
+            if (min1 == min2 && hour1 == hour2) {
+                num++;
+            }
+        }
+        if (num == flight_selected_Airport_From.getRunway()) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Izabrani polazni aerodrom nema dovoljno pisti za izabrano vreme."));
+        }
+    }
+
+    public void checkForRunwayOverloadTo() {
+        Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        org.hibernate.Query query = session.createQuery("SELECT f FROM Flight f WHERE f.airportTo =:airportTo AND f.departureDate = :departureDate");
+        query.setEntity("airportTo", flight_selected_Airport_To);
+        query.setDate("departureDate", flight_date);
+        List<Flight> f1 = query.list();
+        session.getTransaction().commit();
+        session.close();
+
+        int num = 0;
+        for (Flight f : f1) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(f.getPlannedTime());
+            int hour1 = cal.get(Calendar.HOUR);
+            int min1 = cal.get(Calendar.MINUTE);
+            cal.setTime(flight_date);
+            int hour2 = cal.get(Calendar.HOUR) + duration / 60;
+            if (hour2 > 12) {
+                hour2 -= 12;
+            }
+            int min2 = cal.get(Calendar.MINUTE) + duration % 60;
+            if (min2 > 60) {
+                min2 -= 60;
+            }
+            if (min1 == min2 && hour1 == hour2) {
+                num++;
+            }
+        }
+        if (num == flight_selected_Airport_To.getRunway()) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Izabrani dolazni aerodrom nema dovoljno pisti za izabrano vreme."));
+        }
+    }
+
+    private Airport flight_selected_Airport_From;
+    private Airport flight_selected_Airport_To;
+
+    public void loadFromGates() {
+        gate_from = null;
+        gateFromNames = null;
+        String iata = null;
+        for (Airport a : this.airports) {
+            if (flight_from.contains(a.getIata())) {
+                iata = a.getIata();
+                flight_selected_Airport_From = a;
+            }
+        }
+        Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        org.hibernate.Query query = session.createQuery("SELECT g FROM Gate g WHERE g.id like '%" + iata + "%'");
+        //query.setString("iata", iata);
+        gate_from = query.list();
+        gateFromNames = new ArrayList<String>();
+        for (Gate g : gate_from) {
+            gateFromNames.add(g.getId());
+        }
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public void loadtoGates() {
+        gate_to = null;
+        gateToNames = null;
+        String iata = null;
+        for (Airport a : this.airports) {
+            if (flight_to.contains(a.getIata())) {
+                iata = a.getIata();
+                flight_selected_Airport_To = a;
+            }
+        }
+        Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        org.hibernate.Query query = session.createQuery("SELECT g FROM Gate g WHERE g.id like '%" + iata + "%'");
+        //query.setString("iata", iata);
+        gate_to = query.list();
+        gateToNames = new ArrayList<String>();
+        for (Gate g : gate_to) {
+            gateToNames.add(g.getId());
+        }
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    public void sortAirplanes() {
+        if (!charter) {
+            Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            org.hibernate.Query query = session.getNamedQuery("Airplane.findAll");
+            airplanes = query.list();
+            session.getTransaction().commit();
+            session.close();
+
+            airplanesRegular = new ArrayList<Airplane>();
+            airplanesRegularNames = new ArrayList<String>();
+
+            for (Airplane a : airplanes) {
+                if (a.getAirlineRenting() == null && a.getRented() == 0 && a.getAirline() != null) {
+                    airplanesRegular.add(a);
+                    airplanesRegularNames.add(a.getName() + " (" + a.getLicence().getMName().getName() + " " + a.getLicence().getName() + ") - " + a.getAirline().getName());
+                }
+            }
+        } else {
+            airplanesCharter = new ArrayList<Airplane>();
+            Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            org.hibernate.Query query = session.getNamedQuery("Airplane.findByRented");
+            query.setInteger("rented", 1);
+            airplanesCharter = query.list();
+            session.getTransaction().commit();
+            session.close();
+            airplanesCharterNames = new ArrayList<String>();
+            for (Airplane a : airplanesCharter) {
+                airplanesCharterNames.add(a.getName() + " (" + a.getLicence().getMName().getName() + " " + a.getLicence().getName() + ")" + a.getAirlineRenting().getName());
+            }
+        }
+    }
+
+    public void setTheCrew() {
+        if (airplane_name_selected != null && !airplane_name_selected.isEmpty()) {
+            //adding the towers
+            //RadioTower.findAll
+            Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            org.hibernate.Query query = session.getNamedQuery("RadioTower.findAll");
+            allRadioTowers = query.list();
+            session.getTransaction().commit();
+            session.close();
+            
+            radioTower = new RadioTower();
+            radioTowers = new ArrayList<RadioTower>();
+            radioTowerNames = new ArrayList<String>();
+            for(RadioTower r: allRadioTowers){
+                if(r.getName().equals(flight_selected_Airport_From.getCity())) {
+                    radioTowers.add(r);
+                }
+                else if(r.getName().equals(flight_selected_Airport_To.getCity())){
+                    radioTowers.add(r);
+                }
+                else{
+                    
+                radioTowerNames.add(r.getName());
+                }
+            }
+            
+            
+            if (!charter) {
+                for (Airplane a : airplanesRegular) {
+                    if (airplane_name_selected.contains(a.getName())) {
+                        airplane_selected = a;
+                        break;
+                    }
+                }
+                pilotsFromSelectedAirline = new ArrayList<String>();
+                for (User u : pilots) {
+                    if (u.getAirline().getId() == airplane_selected.getAirline().getId()) {
+                        pilotsFromSelectedAirline.add(u.getName());
+                    }
+                }
+                Airline aa = airplane_selected.getAirline();
+                session = hibernate.HibernateUtil.getSessionFactory().openSession();
+                session.beginTransaction();
+                query = session.createQuery("SELECT u FROM User u WHERE u.type = 'stjuardesa' AND u.airline = :airline");
+                query.setEntity("airline", aa);
+                fa = query.list();
+                session.getTransaction().commit();
+                session.close();
+                faNames = new ArrayList<String>();
+                faNames.add("");
+                for(User u:fa){
+                    faNames.add(u.getName());
+                }
+            } else {
+                for (Airplane a : airplanesCharter) {
+                    if (airplane_name_selected.contains(a.getName())) {
+                        airplane_selected = a;
+                        break;
+                    }
+                }
+                for (User u : pilots) {
+                    if (u.getAirline().getId() == airplane_selected.getAirlineRenting().getId()) {
+                        pilotsFromSelectedAirline.add(u.getName());
+                    }
+                }
+                Airline aa = airplane_selected.getAirlineRenting();
+            }
+
+        }
     }
 
 }
