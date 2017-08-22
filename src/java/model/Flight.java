@@ -47,6 +47,8 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Flight.findByCharter", query = "SELECT f FROM Flight f WHERE f.charter = :charter")})
 public class Flight implements Serializable {
 
+    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "price")
@@ -138,7 +140,7 @@ public class Flight implements Serializable {
     @JoinColumn(name = "fa5", referencedColumnName = "username")
     @ManyToOne
     private User fa5;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "id")
     private List<ControlCheck> controlCheckList;
 
     public Flight() {
@@ -418,5 +420,7 @@ public class Flight implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
     
 }

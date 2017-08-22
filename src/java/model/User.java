@@ -7,7 +7,9 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,12 +17,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -40,6 +44,21 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "User.findByPending", query = "SELECT u FROM User u WHERE u.pending = :pending")
     , @NamedQuery(name = "User.findByPilotFirstLogin", query = "SELECT u FROM User u WHERE u.pilotFirstLogin = :pilotFirstLogin")})
 public class User implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pilot")
+    private List<Flight> flightList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fa2")
+    private List<Flight> flightList1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fa1")
+    private List<Flight> flightList2;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fa3")
+    private List<Flight> flightList3;
+    @OneToMany(mappedBy = "fa4")
+    private List<Flight> flightList4;
+    @OneToMany(mappedBy = "fa5")
+    private List<Flight> flightList5;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "coplot")
+    private List<Flight> flightList6;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -197,6 +216,69 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "model.User[ username=" + username + " ]";
+    }
+
+    @XmlTransient
+    public List<Flight> getFlightList() {
+        return flightList;
+    }
+
+    public void setFlightList(List<Flight> flightList) {
+        this.flightList = flightList;
+    }
+
+    @XmlTransient
+    public List<Flight> getFlightList1() {
+        return flightList1;
+    }
+
+    public void setFlightList1(List<Flight> flightList1) {
+        this.flightList1 = flightList1;
+    }
+
+    @XmlTransient
+    public List<Flight> getFlightList2() {
+        return flightList2;
+    }
+
+    public void setFlightList2(List<Flight> flightList2) {
+        this.flightList2 = flightList2;
+    }
+
+    @XmlTransient
+    public List<Flight> getFlightList3() {
+        return flightList3;
+    }
+
+    public void setFlightList3(List<Flight> flightList3) {
+        this.flightList3 = flightList3;
+    }
+
+    @XmlTransient
+    public List<Flight> getFlightList4() {
+        return flightList4;
+    }
+
+    public void setFlightList4(List<Flight> flightList4) {
+        this.flightList4 = flightList4;
+    }
+
+    @XmlTransient
+    public List<Flight> getFlightList5() {
+        return flightList5;
+    }
+
+    public void setFlightList5(List<Flight> flightList5) {
+        this.flightList5 = flightList5;
+    }
+
+    @XmlTransient
+    public List<Flight> getFlightList6() {
+        return flightList6;
+    }
+
+    public void setFlightList6(List<Flight> flightList6) {
+        this.flightList6 = flightList6;
     }
     
 }

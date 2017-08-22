@@ -25,7 +25,6 @@ import model.Airline;
 import model.Airplane;
 import model.Airport;
 import model.ControlCheck;
-import model.ControlCheckPK;
 import model.Flight;
 import model.Gate;
 import model.Licences;
@@ -925,7 +924,7 @@ public class AdminController {
         return event.getNewStep();
     }
 
-    public void checkForRunwayOverloadFrom() {
+    public boolean checkForRunwayOverloadFrom() {
         Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         org.hibernate.Query query = session.createQuery("SELECT f FROM Flight f WHERE f.airportFrom =:airportFrom AND f.departureDate = :departureDate");
@@ -950,10 +949,12 @@ public class AdminController {
         }
         if (num == flight_selected_Airport_From.getRunway()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Izabrani polazni aerodrom nema dovoljno pisti za izabrano vreme."));
+            return true;
         }
+        return false;
     }
 
-    public void checkForRunwayOverloadTo() {
+    public boolean checkForRunwayOverloadTo() {
         Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         org.hibernate.Query query = session.createQuery("SELECT f FROM Flight f WHERE f.airportTo =:airportTo AND f.departureDate = :departureDate");
@@ -984,7 +985,9 @@ public class AdminController {
         }
         if (num == flight_selected_Airport_To.getRunway()) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Izabrani dolazni aerodrom nema dovoljno pisti za izabrano vreme."));
+            return true;
         }
+        return false;
     }
 
     private Airport flight_selected_Airport_From;
@@ -1151,7 +1154,24 @@ public class AdminController {
         }
     }
 
-    public void addFlight() {
+    public String addFlight() {
+        //checkings
+        if(checkForRunwayOverloadFrom()) return "admin-flight-add";
+        if(checkForRunwayOverloadTo()) return "admin-flight-add";
+        if(flight_selected_Airport_From==flight_selected_Airport_To){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Isti dolazni i odlazni aerodrom."));
+            return "admin-flight-add";
+        }
+        if(pilot1.equals(pilot2)){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Dva puta izabran isti pilot."));
+            return "admin-flight-add";
+        }
+        if( fa1.equals(fa2) || fa1.equals(fa3) || fa1.equals(fa4) || fa1.equals(fa5) || fa2.equals(fa3) || fa2.equals(fa4) || fa2.equals(fa5) || fa3.equals(fa4)|| fa3.equals(fa5) || (fa4!=null && fa4.equals(fa5)) ){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Više puta izabrana jedna stjuardesa."));
+            return "admin-flight-add";
+        }
+        
+        
         Flight f = new Flight();
         //setting airports
         f.setAirportFrom(flight_selected_Airport_From);
@@ -1229,17 +1249,39 @@ public class AdminController {
         }
 
         //reorganizing raio towers(first two are from and to)
-        RadioTower r1 = radioTowers.remove(0);
-        RadioTower r2 = radioTowers.remove(1);
+        
+        RadioTower r1 = null;
+        RadioTower r2 = null;
+        int i=0;
+        int pos=0;
+        for(RadioTower r: radioTowers){
+            if(r.getName().equals(f.getAirportFrom().getCity()))pos=i;
+            i++;
+        }
+        r1 = radioTowers.remove(pos); System.out.println(r1.getName());
+        i=0;
+        for(RadioTower r: radioTowers){
+            if(r.getName().equals(f.getAirportTo().getCity()))pos=i;
+            i++;
+        }
+        r2 = radioTowers.remove(pos); System.out.println(r2.getName());
         if (r1.getName().equals(f.getAirportFrom().getCity())) {
             radioTowers.add(0, r1);
             radioTowers.add(r2);
         } else {
             radioTowers.add(0, r2);
             radioTowers.add(r1);
-        }       
-
-        //f.setControlCheckList(cc);
+        }    
+        
+        //ControlCheck
+        List<ControlCheck> cc = new ArrayList<ControlCheck>(radioTowers.size());
+        for(RadioTower r: radioTowers){
+            ControlCheck c = new ControlCheck();
+            c.setFlightId(f);
+            c.setRadioTower(r);
+            c.setStatus("waiting");
+            cc.add(c);
+        }
 
         Flight f1 = null;
         Flight f2 = null;
@@ -1308,48 +1350,65 @@ public class AdminController {
         Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(f);
+        for(ControlCheck c:cc){
+            session.save(c);
+        }
         if (!charter) {
             if (f1 != null) {
                 session.save(f1);
+                for(ControlCheck c:cc){
+                    ControlCheck c1 = new ControlCheck();
+                    c1.setFlightId(f1);
+                    c1.setRadioTower(c.getRadioTower());
+                    c1.setStatus("waiting");
+                    session.save(c1);
+                }
             }
             if (f2 != null) {
                 session.save(f2);
+                for(ControlCheck c:cc){
+                    ControlCheck c1 = new ControlCheck();
+                    c1.setFlightId(f2);
+                    c1.setRadioTower(c.getRadioTower());
+                    c1.setStatus("waiting");
+                    session.save(c1);
+                }
             }
             if (f3 != null) {
                 session.save(f3);
+                for(ControlCheck c:cc){
+                    ControlCheck c1 = new ControlCheck();
+                    c1.setFlightId(f3);
+                    c1.setRadioTower(c.getRadioTower());
+                    c1.setStatus("waiting");
+                    session.save(c1);
+                }
             }
             if (f4 != null) {
                 session.save(f4);
+                for(ControlCheck c:cc){
+                    ControlCheck c1 = new ControlCheck();
+                    c1.setFlightId(f4);
+                    c1.setRadioTower(c.getRadioTower());
+                    c1.setStatus("waiting");
+                    session.save(c1);
+                }
             }
         }
         session.getTransaction().commit();
         session.close();
         
-        
-        
-        //
-        
-        List<ControlCheck> cc = new ArrayList<ControlCheck>(radioTowers.size());
-        for (RadioTower r : radioTowers) {
-            ControlCheck c = new ControlCheck();
-            c.setFlight(f);
-            c.setRadioTower1(r);
-            c.setStatus("waiting");
-            ControlCheckPK pk = new ControlCheckPK();
-            pk.setFlightId(f.getId());
-            pk.setRadioTower(r.getName());
-            c.setControlCheckPK(pk);
-        }
-        
-        session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        /*
+         session = hibernate.HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        for (ControlCheck c : cc) {
+        for(ControlCheck c:cc){
             session.save(c);
         }
         session.getTransaction().commit();
         session.close();
-
+*/
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Uspešno dodat novi let."));
+        return "admin-flight-add";
     }
 
 }

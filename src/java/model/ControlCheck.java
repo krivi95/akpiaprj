@@ -6,9 +6,12 @@
 package model;
 
 import java.io.Serializable;
+import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -26,44 +29,42 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ControlCheck.findAll", query = "SELECT c FROM ControlCheck c")
-    , @NamedQuery(name = "ControlCheck.findByFlightId", query = "SELECT c FROM ControlCheck c WHERE c.controlCheckPK.flightId = :flightId")
-    , @NamedQuery(name = "ControlCheck.findByRadioTower", query = "SELECT c FROM ControlCheck c WHERE c.controlCheckPK.radioTower = :radioTower")
+    , @NamedQuery(name = "ControlCheck.findById", query = "SELECT c FROM ControlCheck c WHERE c.id = :id")
     , @NamedQuery(name = "ControlCheck.findByStatus", query = "SELECT c FROM ControlCheck c WHERE c.status = :status")
     , @NamedQuery(name = "ControlCheck.findByNumber", query = "SELECT c FROM ControlCheck c WHERE c.number = :number")})
 public class ControlCheck implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected ControlCheckPK controlCheckPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
     @Size(max = 30)
     @Column(name = "status")
     private String status;
     @Column(name = "number")
     private Integer number;
-    @JoinColumn(name = "flight_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "radio_tower", referencedColumnName = "name")
     @ManyToOne(optional = false)
-    private Flight flight;
-    @JoinColumn(name = "radio_tower", referencedColumnName = "name", insertable = false, updatable = false)
+    private RadioTower radioTower;
+    @JoinColumn(name = "flight_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private RadioTower radioTower1;
+    private Flight flightId;
 
     public ControlCheck() {
     }
 
-    public ControlCheck(ControlCheckPK controlCheckPK) {
-        this.controlCheckPK = controlCheckPK;
+    public ControlCheck(Integer id) {
+        this.id = id;
     }
 
-    public ControlCheck(int flightId, String radioTower) {
-        this.controlCheckPK = new ControlCheckPK(flightId, radioTower);
+    public Integer getId() {
+        return id;
     }
 
-    public ControlCheckPK getControlCheckPK() {
-        return controlCheckPK;
-    }
-
-    public void setControlCheckPK(ControlCheckPK controlCheckPK) {
-        this.controlCheckPK = controlCheckPK;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getStatus() {
@@ -82,26 +83,26 @@ public class ControlCheck implements Serializable {
         this.number = number;
     }
 
-    public Flight getFlight() {
-        return flight;
+    public RadioTower getRadioTower() {
+        return radioTower;
     }
 
-    public void setFlight(Flight flight) {
-        this.flight = flight;
+    public void setRadioTower(RadioTower radioTower) {
+        this.radioTower = radioTower;
     }
 
-    public RadioTower getRadioTower1() {
-        return radioTower1;
+    public Flight getFlightId() {
+        return flightId;
     }
 
-    public void setRadioTower1(RadioTower radioTower1) {
-        this.radioTower1 = radioTower1;
+    public void setFlightId(Flight flightId) {
+        this.flightId = flightId;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (controlCheckPK != null ? controlCheckPK.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -112,7 +113,7 @@ public class ControlCheck implements Serializable {
             return false;
         }
         ControlCheck other = (ControlCheck) object;
-        if ((this.controlCheckPK == null && other.controlCheckPK != null) || (this.controlCheckPK != null && !this.controlCheckPK.equals(other.controlCheckPK))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -120,7 +121,7 @@ public class ControlCheck implements Serializable {
 
     @Override
     public String toString() {
-        return "model.ControlCheck[ controlCheckPK=" + controlCheckPK + " ]";
+        return "model.ControlCheck[ id=" + id + " ]";
     }
     
 }

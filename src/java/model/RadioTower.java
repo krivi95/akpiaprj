@@ -37,6 +37,8 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "RadioTower.findByLatitude", query = "SELECT r FROM RadioTower r WHERE r.latitude = :latitude")})
 public class RadioTower implements Serializable {
 
+
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -55,7 +57,7 @@ public class RadioTower implements Serializable {
     @JoinColumn(name = "iata", referencedColumnName = "iata")
     @ManyToOne
     private Airport iata;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "radioTower1")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "radioTower")
     private List<ControlCheck> controlCheckList;
 
     public RadioTower() {
@@ -136,5 +138,6 @@ public class RadioTower implements Serializable {
     public String toString() {
         return "model.RadioTower[ name=" + name + " ]";
     }
-    
+
+  
 }
