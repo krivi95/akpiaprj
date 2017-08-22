@@ -130,7 +130,10 @@
                                 </p:column>
 
                                 <p:column headerText="Trajanje leta">
-                                    #{f.duration}
+                                    <h:outputText value="#{f.duration/60}">
+                                        <f:convertNumber maxFractionDigits="0" />
+                                    </h:outputText>
+                                    h  &nbsp; #{f.duration%60} min
                                 </p:column>
 
                                 <p:column headerText="Slobodnih sedišta">
@@ -172,7 +175,10 @@
                                 </p:column>
 
                                 <p:column headerText="Trajanje leta">
-                                    #{f.duration}
+                                    <h:outputText value="#{f.duration/60}">
+                                        <f:convertNumber maxFractionDigits="0" />
+                                    </h:outputText>
+                                    h  &nbsp; #{f.duration%60} min
                                 </p:column>
 
                                 <p:column headerText="Slobodnih sedišta">
@@ -213,7 +219,10 @@
                             </p:column>
 
                             <p:column headerText="Trajanje leta">
-                                #{f.duration}
+                                <h:outputText value="#{f.duration/60}">
+                                    <f:convertNumber maxFractionDigits="0" />
+                                </h:outputText>
+                                h  &nbsp; #{f.duration%60} min 
                             </p:column>
 
                         </p:dataTable>

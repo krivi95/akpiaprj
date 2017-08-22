@@ -54,7 +54,7 @@
                 <h:form>  
                     <p:growl id="messages"/>
 
-                    <p:menubar>
+                    <p:menubar style="width: 100%">
                         <p:menuitem value="Korisnici" icon="ui-icon-person"   action="admin-home" />                       
 
                         <p:submenu label="Aerodromi" >
@@ -73,14 +73,12 @@
                             <p:menuitem value="Dodaj novi"  icon="ui-icon-contact" action="admin-airplane-add"  />
                             <p:menuitem value="Pregled" icon="ui-icon-zoomin" action="admin-airplane-look" />
                         </p:submenu>
-                            
-                        <p:submenu label="Letovi" >
-                            <p:menuitem value="Dodaj novu" url="#" icon="ui-icon-contact" />
-                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" url="#"  />
-                        </p:submenu>
+                          
+                         <p:menuitem value="Letovi" action="admin-flight-add" />
+                         
 
                         <f:facet name="options">
-                            <p:commandButton action="#{adminController.logOut()}" value="Logout" icon="ui-icon-extlink" />
+                            <p:commandButton action="#{adminController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
                         </f:facet>
                     </p:menubar>
                 </h:form>

@@ -24,6 +24,8 @@ import javax.servlet.http.HttpSession;
 import model.Airline;
 import model.Airplane;
 import model.Airport;
+import model.ControlCheck;
+import model.ControlCheckPK;
 import model.Flight;
 import model.Gate;
 import model.Licences;
@@ -106,13 +108,13 @@ public class AdminController {
     private String fa3 = null;
     private String fa4 = null;
     private String fa5 = null;
-    private int numOfRadioTowers=3;
-    private List<RadioTower> radioTowers=null;
+    private int numOfRadioTowers = 3;
+    private List<RadioTower> radioTowers = null;
     private RadioTower radioTower;
-    private List<String> radioTowerNames=null;
+    private List<String> radioTowerNames = null;
     private String radioTowerChosen;
-    private List<RadioTower> allRadioTowers=null;
-    private boolean showFinish=false;
+    private List<RadioTower> allRadioTowers = null;
+    private boolean showFinish = false;
 
     public boolean isShowFinish() {
         return showFinish;
@@ -121,7 +123,6 @@ public class AdminController {
     public void setShowFinish(boolean showFinish) {
         this.showFinish = showFinish;
     }
-    
 
     public String getRadioTowerChosen() {
         return radioTowerChosen;
@@ -130,7 +131,6 @@ public class AdminController {
     public void setRadioTowerChosen(String radioTowerChosen) {
         this.radioTowerChosen = radioTowerChosen;
     }
-    
 
     public int getNumOfRadioTowers() {
         return numOfRadioTowers;
@@ -163,8 +163,6 @@ public class AdminController {
     public void setRadioTowerNames(List<String> radioTowerNames) {
         this.radioTowerNames = radioTowerNames;
     }
-    
-    
 
     public List<String> getPilotsFromSelectedAirline() {
         return pilotsFromSelectedAirline;
@@ -788,10 +786,10 @@ public class AdminController {
         gate = new Gate();
         return null;
     }
-    
+
     public String reinitTower() {
-        for(RadioTower r: allRadioTowers){
-            if(radioTowerChosen.equals(r.getName())) {
+        for (RadioTower r : allRadioTowers) {
+            if (radioTowerChosen.equals(r.getName())) {
                 radioTower.setIata(r.getIata());
                 radioTower.setLatitude(r.getLatitude());
                 radioTower.setLongitude(r.getLongitude());
@@ -923,7 +921,7 @@ public class AdminController {
         checkForRunwayOverloadTo();
         sortAirplanes();
         setTheCrew();
-        showFinish=false;
+        showFinish = false;
         return event.getNewStep();
     }
 
@@ -1082,24 +1080,21 @@ public class AdminController {
             allRadioTowers = query.list();
             session.getTransaction().commit();
             session.close();
-            
+
             radioTower = new RadioTower();
             radioTowers = new ArrayList<RadioTower>();
             radioTowerNames = new ArrayList<String>();
-            for(RadioTower r: allRadioTowers){
-                if(r.getName().equals(flight_selected_Airport_From.getCity())) {
+            for (RadioTower r : allRadioTowers) {
+                if (r.getName().equals(flight_selected_Airport_From.getCity())) {
                     radioTowers.add(r);
-                }
-                else if(r.getName().equals(flight_selected_Airport_To.getCity())){
+                } else if (r.getName().equals(flight_selected_Airport_To.getCity())) {
                     radioTowers.add(r);
-                }
-                else{
-                    
-                radioTowerNames.add(r.getName());
+                } else {
+
+                    radioTowerNames.add(r.getName());
                 }
             }
-            
-            
+
             if (!charter) {
                 for (Airplane a : airplanesRegular) {
                     if (airplane_name_selected.contains(a.getName())) {
@@ -1123,7 +1118,7 @@ public class AdminController {
                 session.close();
                 faNames = new ArrayList<String>();
                 faNames.add("");
-                for(User u:fa){
+                for (User u : fa) {
                     faNames.add(u.getName());
                 }
             } else {
@@ -1139,9 +1134,222 @@ public class AdminController {
                     }
                 }
                 Airline aa = airplane_selected.getAirlineRenting();
+                session = hibernate.HibernateUtil.getSessionFactory().openSession();
+                session.beginTransaction();
+                query = session.createQuery("SELECT u FROM User u WHERE u.type = 'stjuardesa' AND u.airline = :airline");
+                query.setEntity("airline", aa);
+                fa = query.list();
+                session.getTransaction().commit();
+                session.close();
+                faNames = new ArrayList<String>();
+                faNames.add("");
+                for (User u : fa) {
+                    faNames.add(u.getName());
+                }
             }
 
         }
+    }
+
+    public void addFlight() {
+        Flight f = new Flight();
+        //setting airports
+        f.setAirportFrom(flight_selected_Airport_From);
+        f.setAirportTo(flight_selected_Airport_To);
+        f.setAirplaneId(airplane_selected);
+        //setting gates
+        for (Gate g : gate_from) {
+            if (g.getId().equals(gate_from_selected)) {
+                f.setGateFrom(g);
+            }
+        }
+        for (Gate g : gate_to) {
+            if (g.getId().equals(gate_to_selected)) {
+                f.setGateTo(g);
+            }
+        }
+        //setting airline
+        if (airplane_selected.getRented() == 0) {
+            f.setCharter(0);
+            f.setCompany(airplane_selected.getAirline());
+        } else {
+            f.setCharter(1);
+            f.setCompany(airplane_selected.getAirlineRenting());
+        }
+
+        //seting departure time
+        f.setDuration(duration);
+        f.setDepartureDate(flight_date);
+        f.setDepartureTime(flight_date);
+        //setting planned time
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(flight_date);
+        int hour1 = cal.get(Calendar.HOUR_OF_DAY);
+        int min1 = cal.get(Calendar.MINUTE);
+        int totalMin = hour1 * 60 + min1 + duration;
+        int hour2 = totalMin / 60;
+        int min2 = totalMin % 60;
+        if (hour2 > 24) {
+            hour2 -= hour2 - 24;
+        }
+        cal.set(Calendar.HOUR_OF_DAY, hour2);
+        cal.set(Calendar.MINUTE, min2);
+        f.setPlannedTime(cal.getTime());
+        f.setExpectedTime(cal.getTime());
+
+        f.setPrice(price);
+        f.setSeats(airplane_selected.getMaxSeats());
+        f.setStatus("waiting");
+
+        //seting crew
+        for (User u : pilots) {
+            if (u.getName().equals(pilot1)) {
+                f.setPilot(u);
+            }
+            if (u.getName().equals(pilot2)) {
+                f.setCoplot(u);
+            }
+        }
+        for (User u : fa) {
+            if (fa1.equals(u.getName())) {
+                f.setFa1(u);
+            }
+            if (fa2.equals(u.getName())) {
+                f.setFa2(u);
+            }
+            if (fa3.equals(u.getName())) {
+                f.setFa3(u);
+            }
+            if (fa4 != null && !fa4.isEmpty() && fa4.equals(u.getName())) {
+                f.setFa4(u);
+            }
+            if (fa5 != null && !fa5.isEmpty() && fa5.equals(u.getName())) {
+                f.setFa5(u);
+            }
+        }
+
+        //reorganizing raio towers(first two are from and to)
+        RadioTower r1 = radioTowers.remove(0);
+        RadioTower r2 = radioTowers.remove(1);
+        if (r1.getName().equals(f.getAirportFrom().getCity())) {
+            radioTowers.add(0, r1);
+            radioTowers.add(r2);
+        } else {
+            radioTowers.add(0, r2);
+            radioTowers.add(r1);
+        }       
+
+        //f.setControlCheckList(cc);
+
+        Flight f1 = null;
+        Flight f2 = null;
+        Flight f3 = null;
+        Flight f4 = null;
+        //weakly flight
+        if (!charter) {
+            cal = Calendar.getInstance();
+            cal.setTime(flight_date);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            if (month == 0 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11) {
+                if ((day + 7) < 31) {
+                    f1 = new Flight(f);
+                    cal.set(Calendar.DAY_OF_MONTH, day + 7);
+                    System.out.println(cal.getTime());
+                    f1.setDepartureDate(cal.getTime());
+
+                }
+                if ((day + 14) < 31) {
+                    f2 = new Flight(f);
+                    cal.set(Calendar.DAY_OF_MONTH, day + 14);
+                    System.out.println(cal.getTime());
+                    f2.setDepartureDate(cal.getTime());
+
+                }
+                if ((day + 21) < 31) {
+                    f3 = new Flight(f);
+                    cal.set(Calendar.DAY_OF_MONTH, day + 21);
+                    System.out.println(cal.getTime());
+                    f3.setDepartureDate(cal.getTime());
+                }
+                if ((day + 28) < 31) {
+                    f4 = new Flight(f);
+                    cal.set(Calendar.DAY_OF_MONTH, day + 28);
+                    System.out.println(cal.getTime());
+                    f4.setDepartureDate(cal.getTime());
+                }
+            } else {
+                if ((day + 7) < 30) {
+                    f1 = new Flight(f);
+                    cal.set(Calendar.DAY_OF_MONTH, day + 7);
+                    f1.setDepartureDate(cal.getTime());
+
+                }
+                if ((day + 14) < 30) {
+                    f2 = new Flight(f);
+                    cal.set(Calendar.DAY_OF_MONTH, day + 14);
+                    f2.setDepartureDate(cal.getTime());
+
+                }
+                if ((day + 21) < 30) {
+                    f3 = new Flight(f);
+                    cal.set(Calendar.DAY_OF_MONTH, day + 21);
+                    f3.setDepartureDate(cal.getTime());
+                }
+                if ((day + 28) < 30) {
+                    f4 = new Flight(f);
+                    cal.set(Calendar.DAY_OF_MONTH, day + 28);
+                    f4.setDepartureDate(cal.getTime());
+                }
+
+            }
+        }
+
+        Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        session.save(f);
+        if (!charter) {
+            if (f1 != null) {
+                session.save(f1);
+            }
+            if (f2 != null) {
+                session.save(f2);
+            }
+            if (f3 != null) {
+                session.save(f3);
+            }
+            if (f4 != null) {
+                session.save(f4);
+            }
+        }
+        session.getTransaction().commit();
+        session.close();
+        
+        
+        
+        //
+        
+        List<ControlCheck> cc = new ArrayList<ControlCheck>(radioTowers.size());
+        for (RadioTower r : radioTowers) {
+            ControlCheck c = new ControlCheck();
+            c.setFlight(f);
+            c.setRadioTower1(r);
+            c.setStatus("waiting");
+            ControlCheckPK pk = new ControlCheckPK();
+            pk.setFlightId(f.getId());
+            pk.setRadioTower(r.getName());
+            c.setControlCheckPK(pk);
+        }
+        
+        session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        for (ControlCheck c : cc) {
+            session.save(c);
+        }
+        session.getTransaction().commit();
+        session.close();
+
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Uspešno dodat novi let."));
     }
 
 }

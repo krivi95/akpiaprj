@@ -54,33 +54,31 @@
                 <h:form>  
                     <p:growl id="messages"/>
 
-                    <p:menubar>
+                    <p:menubar style="width: 100%">
                         <p:menuitem value="Korisnici" icon="ui-icon-person"   action="admin-home" />                       
 
                         <p:submenu label="Aerodromi" >
-                            <p:menuitem value="Dodaj novi"  icon="ui-icon-contact" action="admin-airport-add"/>
+                            <p:menuitem value="Dodaj novi" action="admin-airport-add" icon="ui-icon-contact" />
                             <p:menuitem value="Pregled" icon="ui-icon-zoomin" action="admin-airport-look"  />
                         </p:submenu>
 
-                        <p:menuitem value="Avio kompanije" action="admin-airline-look"  />
+                         <p:menuitem value="Avio kompanije" action="admin-airline-look"  />
 
                         <p:submenu label="Piloti" >
                             <p:menuitem value="Dodaj licencu"  icon="ui-icon-contact" action="admin-pilot-add"/>
-                            <p:menuitem value="Pregled licenci" icon="ui-icon-zoomin" action="admin-pilot-look" />
+                            <p:menuitem value="Pregled licenci" icon="ui-icon-zoomin" action="admin-pilot-look"  />
                         </p:submenu>
-
+                            
                         <p:submenu label="Avioni" >
-                            <p:menuitem value="Dodaj novi" url="#"  />
-                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" url="#"  />
+                            <p:menuitem value="Dodaj novi"  icon="ui-icon-contact" action="admin-airplane-add"  />
+                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" action="admin-airplane-look" />
                         </p:submenu>
-
-                        <p:submenu label="Letovi" >
-                            <p:menuitem value="Dodaj novu" url="#" icon="ui-icon-contact" />
-                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" url="#"  />
-                        </p:submenu>
+                          
+                         <p:menuitem value="Letovi" action="admin-flight-add" />
+                         
 
                         <f:facet name="options">
-                            <p:commandButton action="#{adminController.logOut()}" value="Logout" icon="ui-icon-extlink" />
+                            <p:commandButton action="#{adminController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
                         </f:facet>
                     </p:menubar>
                 </h:form>

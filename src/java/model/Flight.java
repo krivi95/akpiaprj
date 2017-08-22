@@ -156,6 +156,34 @@ public class Flight implements Serializable {
         this.plannedTime = plannedTime;
         this.charter = charter;
     }
+    
+    public Flight (Flight f){
+        this.airplaneId=f.airplaneId;
+        this.airportFrom=f.airportFrom;
+        this.airportTo = f.airportTo;
+        this.arrivalTime = f.arrivalTime;
+        this.charter = f.charter;
+        this.company = f.company;
+        this.controlCheckList = f.controlCheckList;
+        this.coplot = f.coplot;
+        this.departureDate = f.departureDate;
+        this.departureTime = f.departureTime;
+        this.duration = f.duration;
+        this.expectedTime = f.expectedTime;
+        this.fa1=f.fa1;
+        this.fa2=f.fa2;
+        this.fa3=f.fa3;
+        this.fa4=f.fa4;
+        this.fa5=f.fa5;
+        this.gateFrom = f.gateFrom;
+        this.gateTo = f.gateTo;
+        this.pilot = f.pilot;
+        this.plannedTime = f.plannedTime;
+        this.price = f.price;
+        this.seats = f.seats;
+        this.status = f.status;
+        this.toEmergency = f.toEmergency;
+    }
 
     public Integer getId() {
         return id;
