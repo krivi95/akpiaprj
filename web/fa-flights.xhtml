@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Stjuardesa letovi</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="color: #ffffff ;float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div> 
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="center" gutter="0" >  
+                <h:form>  
+                    <p:growl id="messages"/>
+
+                    <p:menubar style="width: 100%">
+                        <p:menuitem value="Moji podaci" icon="ui-icon-person"   action="fa-home" />      
+                        <p:menuitem value="Letovi" action="fa-flights" />
+                        <f:facet name="options">
+                            <p:commandButton action="#{faController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
+                        </f:facet>
+                    </p:menubar>
+                </h:form>
+
+                <center>
+                    <p:messages id="famessage" showDetail="true" autoUpdate="true" closable="true" />
+
+                    <h:form id="form">
+                        <h1>Budući letovi</h1>
+                        <p:outputPanel >
+                            <p:dataTable value="#{faController.toDoFlights}" var="f" >
+                                <p:column headerText="Od">
+                                    #{f.airportFrom.city}
+                                </p:column>
+
+                                <p:column headerText="Od">
+                                    #{f.airportTo.city}
+                                </p:column>
+
+                                <p:column headerText="Polazak">
+                                    #{f.departureDate} - #{f.departureTime}
+                                </p:column>
+
+                                <p:column headerText="Avion">
+                                    #{f.airplaneId.name}
+                                </p:column>
+
+                                <p:column headerText="Trajanje leta">
+                                    <h:outputText value="#{f.duration/60}">
+                                        <f:convertNumber maxFractionDigits="0" />
+                                    </h:outputText>
+                                    h  &nbsp; #{f.duration%60} min
+                                </p:column>
+
+                                <p:column headerText="Detaljnije">
+                                    <p:commandLink update=":form:flightDetail" oncomplete="PF('flightDialog').show()" title="Detalji o letu">
+                                        <h:outputText styleClass="ui-icon ui-icon-search" style="margin:0 auto;" />
+                                        <f:setPropertyActionListener value="#{f}" target="#{faController.selectedFlight}" />
+                                    </p:commandLink>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                        <p:dialog header="Detalji o letu" widgetVar="flightDialog"  showEffect="fade" hideEffect="fade" resizable="false">
+                            <p:outputPanel id="flightDetail" style="text-align:center;">
+                                <p:panelGrid  columns="2" rendered="#{not empty faController.selectedFlight}" columnClasses="label,value">
+                                    <f:facet name="header">
+                                        <p:outputLabel value="#{faController.selectedFlight.airportFrom.name} - #{faController.selectedFlight.airportTo.name}" />
+                                    </f:facet>
+
+                                    <h:outputText value="Datum poletanja" />
+                                    <h:outputText value="#{faController.selectedFlight.departureDate}" />
+
+                                    <h:outputText value="Vreme poletanja" />
+                                    <h:outputText value="#{faController.selectedFlight.departureTime}" />
+
+                                    <h:outputText value="Polazni gate" />
+                                    <h:outputText value="#{faController.selectedFlight.gateFrom.id}" />
+
+                                    <h:outputText value="Dolazni gate" />
+                                    <h:outputText value="#{faController.selectedFlight.gateTo.id}" />
+                                    
+                                    <h:outputText value="Broj slobodnih sedišta" />
+                                    <h:outputText value="#{faController.selectedFlight.seats} / #{faController.selectedFlight.airplaneId.maxSeats}" />
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:dialog>
+                    </h:form>
+
+                    <h:form >
+                        <h1>Prošli letovi</h1>
+                        <p:outputPanel >
+                            <p:dataTable value="#{faController.finishedFlights}" var="f" >
+                                <p:column headerText="Od">
+                                    #{f.airportFrom.city}
+                                </p:column>
+
+                                <p:column headerText="Od">
+                                    #{f.airportTo.city}
+                                </p:column>
+
+                                <p:column headerText="Polazak">
+                                    #{f.departureDate} - #{f.departureTime}
+                                </p:column>
+
+                                <p:column headerText="Avion">
+                                    #{f.airplaneId.name}
+                                </p:column>
+
+                                <p:column headerText="Trajanje leta">
+                                    <h:outputText value="#{f.duration/60}">
+                                        <f:convertNumber maxFractionDigits="0" />
+                                    </h:outputText>
+                                    h  &nbsp; #{f.duration%60} min
+                                </p:column>
+
+
+
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </h:form>
+
+                </center>
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
+    </h:body>
+</html>
+

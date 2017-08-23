@@ -1258,13 +1258,13 @@ public class AdminController {
             if(r.getName().equals(f.getAirportFrom().getCity()))pos=i;
             i++;
         }
-        r1 = radioTowers.remove(pos); System.out.println(r1.getName());
+        r1 = radioTowers.remove(pos);
         i=0;
         for(RadioTower r: radioTowers){
             if(r.getName().equals(f.getAirportTo().getCity()))pos=i;
             i++;
         }
-        r2 = radioTowers.remove(pos); System.out.println(r2.getName());
+        r2 = radioTowers.remove(pos); 
         if (r1.getName().equals(f.getAirportFrom().getCity())) {
             radioTowers.add(0, r1);
             radioTowers.add(r2);
@@ -1297,27 +1297,23 @@ public class AdminController {
                 if ((day + 7) < 31) {
                     f1 = new Flight(f);
                     cal.set(Calendar.DAY_OF_MONTH, day + 7);
-                    System.out.println(cal.getTime());
                     f1.setDepartureDate(cal.getTime());
 
                 }
                 if ((day + 14) < 31) {
                     f2 = new Flight(f);
                     cal.set(Calendar.DAY_OF_MONTH, day + 14);
-                    System.out.println(cal.getTime());
                     f2.setDepartureDate(cal.getTime());
 
                 }
                 if ((day + 21) < 31) {
                     f3 = new Flight(f);
                     cal.set(Calendar.DAY_OF_MONTH, day + 21);
-                    System.out.println(cal.getTime());
                     f3.setDepartureDate(cal.getTime());
                 }
                 if ((day + 28) < 31) {
                     f4 = new Flight(f);
                     cal.set(Calendar.DAY_OF_MONTH, day + 28);
-                    System.out.println(cal.getTime());
                     f4.setDepartureDate(cal.getTime());
                 }
             } else {

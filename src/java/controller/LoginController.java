@@ -14,6 +14,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import model.Airline;
 import model.Airport;
+import model.CurrentUser;
 import model.Flight;
 import model.Ticket;
 import model.Tickets;
@@ -104,7 +105,6 @@ public class LoginController {
 
         for (Airport aa : airports) {
             cities.add(aa.getCity() + " (" + aa.getIata() + ")");
-            System.out.println(aa.getCity());
         }
 
         //list of today's flights Flight.findByDepartureDate
@@ -145,7 +145,6 @@ public class LoginController {
                 continue;
             }
             airlineNames.add(a.getName());
-            System.out.println(a.getName());
         }
 
         return "Registration";
@@ -588,6 +587,7 @@ public class LoginController {
         }
         currentUser = user;
         httpsession.setAttribute("currentuser", user);
+        CurrentUser.user=user;
 
         if (user.getType().equals("pilot")) {
             return "pilot-home";
@@ -643,12 +643,6 @@ public class LoginController {
 
     public String register() {
 
-        System.out.println(username_new);
-        System.out.println(password_new);
-        System.out.println(name_new);
-        System.out.println(gender_new);
-        System.out.println(birth_new);
-        System.out.println(type_new);
 
         User user = new User();
         user.setUsername(username_new);
