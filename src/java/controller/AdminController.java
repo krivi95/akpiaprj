@@ -717,7 +717,7 @@ public class AdminController {
     public String logOut() {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
         session.invalidate();
-        return "index";
+        return "index?faces-redirect=true";
     }
 
     public String toAirportLook() {

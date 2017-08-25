@@ -23,6 +23,7 @@ import org.hibernate.Session;
 public class FaController {
 
     private User fa;
+    
     private List<Airline> airlines;
     private List<String> airlineNames;
     private String airline_selected;

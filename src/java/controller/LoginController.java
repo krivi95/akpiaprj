@@ -147,7 +147,7 @@ public class LoginController {
             airlineNames.add(a.getName());
         }
 
-        return "Registration";
+        return "Registration?faces-redirect=true";
     }
 
     public static int getTicketId() {
@@ -589,17 +589,21 @@ public class LoginController {
         httpsession.setAttribute("currentuser", user);
         CurrentUser.user=user;
 
-        if (user.getType().equals("pilot")) {
-            return "pilot-home";
+        if (user.getType().equals("pilot") && user.getPilotFirstLogin()==0) {
+            return "pilot-home?faces-redirect=true";
         }
+        if (user.getType().equals("pilot") && user.getPilotFirstLogin()==1) {
+            return "pilot-first-login?faces-redirect=true";
+        }
+        
         if (user.getType().equals("stjuardesa")) {
-            return "fa-home";
+            return "fa-home?faces-redirect=true";
         }
         if (user.getType().equals("admin")) {
-            return "admin-home";
+            return "admin-home?faces-redirect=true";
         }
         if (user.getType().equals("radnik")) {
-            return "worker-home";
+            return "worker-home?faces-redirect=true";
         }
 
         return "index";

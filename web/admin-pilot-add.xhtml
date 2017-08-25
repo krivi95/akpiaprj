@@ -65,26 +65,26 @@
                     <p:growl id="messages"/>
 
                     <p:menubar style="width: 100%">
-                        <p:menuitem value="Korisnici" icon="ui-icon-person"   action="admin-home" />                       
+                        <p:menuitem value="Korisnici" icon="ui-icon-person"   action="admin-home?faces-redirect=true" />                       
 
                         <p:submenu label="Aerodromi" >
-                            <p:menuitem value="Dodaj novi" action="admin-airport-add" icon="ui-icon-contact" />
-                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" action="admin-airport-look"  />
+                            <p:menuitem value="Dodaj novi" action="admin-airport-add?faces-redirect=true" icon="ui-icon-contact" />
+                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" action="admin-airport-look?faces-redirect=true"  />
                         </p:submenu>
 
-                         <p:menuitem value="Avio kompanije" action="admin-airline-look"  />
+                         <p:menuitem value="Avio kompanije" action="admin-airline-look?faces-redirect=true"  />
 
                         <p:submenu label="Piloti" >
-                            <p:menuitem value="Dodaj licencu"  icon="ui-icon-contact" action="admin-pilot-add"/>
-                            <p:menuitem value="Pregled licenci" icon="ui-icon-zoomin" action="admin-pilot-look"  />
+                            <p:menuitem value="Dodaj licencu"  icon="ui-icon-contact" action="admin-pilot-add?faces-redirect=true"/>
+                            <p:menuitem value="Pregled licenci" icon="ui-icon-zoomin" action="admin-pilot-look?faces-redirect=true"  />
                         </p:submenu>
                             
                         <p:submenu label="Avioni" >
-                            <p:menuitem value="Dodaj novi"  icon="ui-icon-contact" action="admin-airplane-add"  />
-                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" action="admin-airplane-look" />
+                            <p:menuitem value="Dodaj novi"  icon="ui-icon-contact" action="admin-airplane-add?faces-redirect=true"  />
+                            <p:menuitem value="Pregled" icon="ui-icon-zoomin" action="admin-airplane-look?faces-redirect=true" />
                         </p:submenu>
                           
-                         <p:menuitem value="Letovi" action="admin-flight-add" />
+                         <p:menuitem value="Letovi" action="admin-flight-add?faces-redirect=true" />
                          
 
                         <f:facet name="options">
@@ -97,7 +97,7 @@
                     <p:messages id="error_message" showDetail="true" autoUpdate="true" closable="true" />
 
                     <h1>Dodajte novu licencu pilotu:</h1>
-                    <h:form>
+                    <h:form prependId="false">
                         <h:panelGrid columns="2">
                             Izaberite pilota:
                             <p:selectOneMenu  value="#{adminController.name}" var="p" required="true" requiredMessage="Izaberite pilota.">

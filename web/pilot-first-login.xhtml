@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Pilot - prvo logovanje</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff ;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
+        <script>
+            function checkLicence() {
+                var valid = /^(\d{7})$/;
+                var br = $('#broj').val(); 
+                if (!valid.test(br)) {
+                    document.getElementById("confirm").disabled = true;
+                    PF('mglasspane').show();
+                }
+                else{
+                    document.getElementById("confirm").disabled = false;
+                }
+
+            }
+        </script>
+    </h:head>
+    <h:body>
+
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div>   
+            </p:layoutUnit>
+
+
+            <p:layoutUnit position="center" gutter="0"> 
+                <center>
+                    <h1>Prvi put ste se ulogovali na sistem, <br></br>
+                     molimo vas unesite vašu licencu:</h1>
+
+                    <p:dialog header="Greska" id="mglasspaneid" draggable="false" resizable="false"  widgetVar="mglasspane" style="height: 50px !important;" >
+                        <span id="loading" draggable="false" style="height: auto !important;">Unesite ispravan broj licence!</span>
+                    </p:dialog>
+                    <h:form prependId="false">
+                        <h:panelGrid columns="2">
+                            Izaberite model aviona:
+                            <p:selectOneMenu   value="#{pilotController.selected_model}"  required="true" requiredMessage="Izaberite tip aviona kojim upravljate.">
+                                <f:selectItems value="#{pilotController.modelNames}"  />
+                            </p:selectOneMenu >
+                            Unesite broj licence (7 cifara):
+                            <p:inputText id="broj" onblur="checkLicence()" value="#{pilotController.licenceNo}" required="true" requiredMessage="Unesite broj licence." />
+                        </h:panelGrid>
+                        <p:commandButton id="confirm" value="Nastavi dalje" action="#{pilotController.addLicence()}"/>
+                    </h:form>
+                </center>
+
+            </p:layoutUnit>
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
+
+    </h:body>
+</html>
+

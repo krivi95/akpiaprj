@@ -1,12 +1,123 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Pilot home</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
     </h:head>
     <h:body>
-        Hello from Facelets
+
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="color: #ffffff ;float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div> 
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="center" gutter="0" >  
+                <h:form>  
+                    <p:growl id="messages"/>
+
+                    <p:menubar style="width: 100%">
+                        <p:menuitem value="Moji podaci" icon="ui-icon-person"   action="pilot-home?faces-redirect=true" />      
+                        <p:menuitem value="Letovi" action="pilot-flights?faces-redirect=true" />
+                        <f:facet name="options">
+                            <p:commandButton action="#{pilotController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
+                        </f:facet>
+                    </p:menubar>
+                </h:form>
+
+                <center>
+                    <p:messages id="famessage" showDetail="true" autoUpdate="true" closable="true" />
+
+                    <h:form>
+                        <p:fieldset legend="Osnovni podaci" toggleable="true" toggleSpeed="500" style="margin-top: 50px">
+                            <h:panelGrid columns="2" style="width:30%">
+                                <h:panelGroup>Ime i prezime: </h:panelGroup>
+                                <h:panelGroup> <h:outputText value="#{pilotController.pilot.name}"  style="font-weight: bolder"/></h:panelGroup>
+                                <h:panelGroup>Godina rodjenja:  </h:panelGroup>
+                                <h:panelGroup><h:outputText value="#{pilotController.pilot.birth}"  style="font-weight: bolder"/> </h:panelGroup>
+                                <h:panelGroup>Korisnicko ime:  </h:panelGroup>
+                                <h:panelGroup><h:outputText value="#{pilotController.pilot.username} "  style="font-weight: bolder"/></h:panelGroup>                    
+                                <h:panelGroup>Avio-kompanija:  </h:panelGroup>
+                                <h:panelGroup>
+                                    <p:inplace  label="#{pilotController.pilot.airline.name}" effectSpeed="fast" event="dblclick" style="font-weight: bolder">
+                                        <p:selectOneMenu   value="#{pilotController.airline_selected}"  required="true" requiredMessage="Izaberite avio-kompanijiu">
+                                            <f:selectItems value="#{pilotController.airlineNames}"  />
+                                        </p:selectOneMenu >
+                                    </p:inplace>
+
+                                </h:panelGroup>
+                                <h:panelGroup>Tip korisnika:  </h:panelGroup>
+                                <h:panelGroup> <h:outputText value="#{pilotController.pilot.type}"  style="font-weight: bolder"/> </h:panelGroup>
+                                <h:panelGroup>Broj odrađenih letova:  </h:panelGroup>
+                                <h:panelGroup> <h:outputText value="#{pilotController.doneFlights}"  style="font-weight: bolder"/> </h:panelGroup>
+                                <h:panelGroup>Broj zakazanih letova: </h:panelGroup>
+                                <h:panelGroup> <h:outputText value="#{pilotController.onGoingFights}"  style="font-weight: bolder"/> </h:panelGroup>
+
+                            </h:panelGrid>
+                        </p:fieldset>                        
+                        <p:commandButton value="Promeni avio-kompaniju" action="#{pilotController.changeAirline()}"/>
+                    </h:form>
+
+
+                    
+
+                    <br></br>
+
+                </center>
+                <br></br>
+                <h:outputLink id="fade" value="#">
+                    <h:outputText value="Pomoć" />
+                </h:outputLink>
+                <p:tooltip id="toolTipFade" for="fade" value="Za promenu avio-kompanije dvoklik na nju." position="top"/>
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
     </h:body>
 </html>
 

@@ -43,6 +43,10 @@
                 }
 
             }
+            function twitter() {
+                var win = window.open("https://twitter.com/intent/tweet?text=Let #{loginController.selectedFlight.airportFrom.city} - #{loginController.selectedFlight.airportTo.city}, polazak: #{loginController.selectedFlight.departureDate} u #{loginController.selectedFlight.departureTime}, cena karte: #{loginController.selectedFlight.price}€", '_blank');
+                win.focus();
+            }
         </script>
     </h:head>
     <h:body>
@@ -85,8 +89,15 @@
                                 <h:outputText value="#{loginController.tickets * loginController.selectedFlight.price}" />
 
                             </h:panelGrid>
+                            Podeli let: 
+                            <p style="width: 5%">
+                            <p:graphicImage value="resources/twitter.png" onclick="twitter()"/>
+                            <p:graphicImage value="resources/facebook.png" onclick="twitter()"/>
+                            </p>
                         </p:fieldset>   
                     </h:form>
+
+                    
 
                     <p:dialog header="Greska" id="mglasspaneid" draggable="false" resizable="false"  widgetVar="mglasspane" style="height: 50px !important;" >
                         <span id="loading" draggable="false" style="height: auto !important;">Unesite ispravan broj kreditne kartice!</span>
@@ -188,14 +199,14 @@
                                     </f:facet>
                                     <h:outputText value="#{t.ticket}" />
                                 </p:column>
-                                
+
                                 <p:column>
                                     <f:facet name="header">
                                         <h:outputText value="Ime i prezime" />
                                     </f:facet>
                                     <h:outputText value="#{t.name}" />
                                 </p:column>
-                                
+
                                 <p:column>
                                     <f:facet name="header">
                                         <h:outputText value="Broj pasoša" />

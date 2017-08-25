@@ -55,8 +55,8 @@
                     <p:growl id="messages"/>
 
                     <p:menubar style="width: 100%">
-                        <p:menuitem value="Moji podaci" icon="ui-icon-person"   action="fa-home" />      
-                        <p:menuitem value="Letovi" action="fa-flights" />
+                        <p:menuitem value="Moji podaci" icon="ui-icon-person"   action="fa-home?faces-redirect=true" />      
+                        <p:menuitem value="Letovi" action="fa-flights?faces-redirect=true" />
                         <f:facet name="options">
                             <p:commandButton action="#{faController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
                         </f:facet>
