@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Detalji o letu</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="color: #ffffff ;float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div> 
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="center" gutter="0" >  
+                <h:form>  
+
+                    <p:menubar style="width: 100%">
+                        <p:menuitem value="Moji podaci" icon="ui-icon-person"   action="pilot-home?faces-redirect=true" />      
+                        <p:menuitem value="Letovi" action="pilot-flights?faces-redirect=true" />
+                        <f:facet name="options">
+                            <p:commandButton action="#{pilotController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
+                        </f:facet>
+                    </p:menubar>
+                </h:form>
+
+                <center>
+                    <p:messages id="famessage" showDetail="true" autoUpdate="true" closable="true" />
+
+                    <h:form>
+                        <h1>Let #{pilotController.flight_selected.airportFrom.city} ( #{pilotController.flight_selected.airportFrom.iata}) - 
+                            #{pilotController.flight_selected.airportTo.name} (#{pilotController.flight_selected.airportTo.iata})  </h1>
+
+
+                            <p:fieldset legend="Posada leta" toggleSpeed="500" toggleable="true">       
+                            <h:panelGrid columns="2" style="width:30%">
+                                Kapetan: 
+                                <p:outputLabel value="#{pilotController.flight_selected.pilot.name}" style="font-weight: bolder"/>
+                                Kopilot: 
+                                <p:outputLabel value="#{pilotController.flight_selected.coplot.name}" style="font-weight: bolder"/>
+                                Stjuardesa1: 
+                                <p:outputLabel value="#{pilotController.flight_selected.fa1.name}" style="font-weight: bolder"/>
+                                Stjuardesa2: 
+                                <p:outputLabel value="#{pilotController.flight_selected.fa2.name}" style="font-weight: bolder"/>
+                                Stjuardesa3: 
+                                <p:outputLabel value="#{pilotController.flight_selected.fa3.name}" style="font-weight: bolder"/>
+                                Stjuardesa4: 
+                                <p:outputLabel value="#{pilotController.flight_selected.fa4.name}" style="font-weight: bolder"/>
+                                Stjuardesa5: 
+                                <p:outputLabel value="#{pilotController.flight_selected.fa5.name}" style="font-weight: bolder"/>                        
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <br></br>
+                        <h4>Podaci o letu:</h4>
+                            <h:panelGrid columns="2">
+                                Polazni gate:
+                                <h:panelGroup>
+                                    <p:inplace  label="#{pilotController.flight_selected.gateFrom.id}" effectSpeed="fast" event="dblclick" style="font-weight: bolder">
+                                        <p:selectOneMenu   value="#{pilotController.gateFrom_selected}"  required="true" requiredMessage="Izaberite polazni gate.">
+                                            <f:selectItems value="#{pilotController.gateFromNames}"  />
+                                        </p:selectOneMenu >
+                                    </p:inplace>
+                                </h:panelGroup>
+                                Polazni gate:
+                                <h:panelGroup>
+                                    <p:inplace  label="#{pilotController.flight_selected.gateTo.id}" effectSpeed="fast" event="dblclick" style="font-weight: bolder">
+                                        <p:selectOneMenu   value="#{pilotController.gateTo_selected}"  required="true" requiredMessage="Izaberite dolazni gate.">
+                                            <f:selectItems value="#{pilotController.gateToNames}"  />
+                                        </p:selectOneMenu >
+                                    </p:inplace>
+                                </h:panelGroup>
+                                Avion:
+                                <p:outputLabel value="#{pilotController.flight_selected.airplaneId.name} (#{pilotController.flight_selected.airplaneId.licence.MName.name} #{pilotController.flight_selected.airplaneId.licence.name}) " style="font-weight: bolder"/>
+                                Datum polaska i vreme:
+                                <p:outputLabel value="#{pilotController.flight_selected.departureDate}  #{pilotController.flight_selected.departureTime}" style="font-weight: bolder"/>
+                            </h:panelGrid>
+                            <br></br>
+                            <p:commandButton value="Promeni polazni i dolazni gate" action="#{pilotController.changeGate()}"/>
+                    </h:form>
+
+                    <br></br>
+                    <br></br>
+                    <h:outputLink id="fade" value="#">
+                        <h:outputText value="Pomoć" />
+                    </h:outputLink>
+                    <p:tooltip id="toolTipFade" for="fade" value="Za promenu dolaznog ili polaznog gate-a dvoklik na njega." position="top"/>
+
+
+
+                </center>
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
+    </h:body>
+</html>
+

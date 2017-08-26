@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Izmena leta</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="color: #ffffff ;float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div> 
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="center" gutter="0" >  
+                <h:form>  
+
+                    <p:menubar style="width: 100%">
+                        <p:menuitem value="Moji podaci" icon="ui-icon-person"   action="pilot-home?faces-redirect=true" />      
+                        <p:menuitem value="Letovi" action="pilot-flights?faces-redirect=true" />
+                        <f:facet name="options">
+                            <p:commandButton action="#{pilotController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
+                        </f:facet>
+                    </p:menubar>
+                </h:form>
+
+                <center>
+                    <p:messages id="pilotmessage" showDetail="true" autoUpdate="true" closable="true" />
+
+                    <h1>Ažiriranje statusa i podata o letu:</h1>
+
+                    <h:form>
+                        <p:fieldset>
+                            <h:panelGrid columns="2">
+
+                                Komunikacija sa radio tornjem: 
+                                <p:selectOneMenu   value="#{pilotController.tower_selected}"  required="true" requiredMessage="Izaberite toranj za komunikaciju.">
+                                    <f:selectItems value="#{pilotController.radioTowers}"  />
+                                </p:selectOneMenu >
+                                Status leta:
+                                <p:selectOneMenu   value="#{pilotController.status}"  >
+                                    <f:selectItem itemValue="let u toku"  itemLabel="let u toku" /> 
+                                    <f:selectItem itemValue="priprema za poletanje" itemLabel="priprema za poletanje"  /> 
+                                    <f:selectItem itemValue="poleteo"   itemLabel="poleteo"/> 
+                                    <f:selectItem itemValue="sleteo"  itemLabel="sleteo" /> 
+                                </p:selectOneMenu >
+                                <h:panelGroup>
+                                    Dužina puta (km):
+                                    <p:inputNumber value="#{pilotController.length}"/>
+                                </h:panelGroup>
+                                <h:panelGroup>
+                                    Prosečna brzina (km/h):
+                                    <p:inputNumber value="#{pilotController.speed}" />
+                                </h:panelGroup>
+                            </h:panelGrid>
+                            <p:commandButton value="Pošalji podatke" actionListener="#{pilotController.updateStatus()}" />
+                        </p:fieldset>
+                        <h5>Otkazivanje leta: </h5>
+                        <p:commandButton value="Otkaži let" actionListener="#{pilotController.cancelFlight()}"/>
+                        <br></br>
+                        <p:fieldset>
+                            <h5>Prinudno sletanje: </h5>
+                            Izaberite najbliži aerodrom:
+                            <p:selectOneMenu   value="#{pilotController.emergencyLanding}"  required="true" requiredMessage="Izaberite toranj za komunikaciju.">
+                                <f:selectItems value="#{pilotController.airportNames}"  />
+                            </p:selectOneMenu >
+                            <br></br>
+                            <p:commandButton value="Vanredna izmena" actionListener="#{pilotController.emergencyLanding()}"/>
+                        </p:fieldset>
+                    </h:form>
+
+
+
+
+                </center>
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
+    </h:body>
+</html>
+

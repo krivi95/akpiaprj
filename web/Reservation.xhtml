@@ -91,13 +91,13 @@
                             </h:panelGrid>
                             Podeli let: 
                             <p style="width: 5%">
-                            <p:graphicImage value="resources/twitter.png" onclick="twitter()"/>
-                            <p:graphicImage value="resources/facebook.png" onclick="twitter()"/>
+                                <p:graphicImage value="resources/twitter.png" onclick="twitter()"/>
+                                <p:graphicImage value="resources/facebook.png" onclick="twitter()"/>
                             </p>
                         </p:fieldset>   
                     </h:form>
 
-                    
+
 
                     <p:dialog header="Greska" id="mglasspaneid" draggable="false" resizable="false"  widgetVar="mglasspane" style="height: 50px !important;" >
                         <span id="loading" draggable="false" style="height: auto !important;">Unesite ispravan broj kreditne kartice!</span>
@@ -182,40 +182,39 @@
                             <p:inputText value="#{loginController.passport8}" required="true" requiredMessage="Obavezno polje"/>
                         </h:panelGrid>
                         <br></br>
-                        <p:commandButton value="Potvrdi plaćanje" actionListener="#{loginController.buyTickets()}" icon="ui-icon-cart">
-                            <f:ajax render="tickets" event="click" />
-                        </p:commandButton>
+                        <p:commandButton value="Potvrdi plaćanje" actionListener="#{loginController.buyTickets()}" icon="ui-icon-cart" />
 
                     </h:form>    
 
                     <br></br>
 
-                    <h:form id="tickets">
-                        <p:outputPanel rendered="#{loginController.showTickets}" autoUpdate="true">
-                            <p:dataTable style="width:1200px;" id="tbl" var="t" value="#{loginController.ticketReservationList}" >
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Broj karte" />
-                                    </f:facet>
-                                    <h:outputText value="#{t.ticket}" />
-                                </p:column>
+                    <h:form>
+                        <h:panelGroup >
+                            <p:outputPanel id="ddd"  autoUpdate="true">
+                                <p:dataTable style="width:1200px;" id="tbl" var="t" value="#{loginController.ticketReservationList}" rendered="#{loginController.showTickets}">
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Broj karte" />
+                                        </f:facet>
+                                        <h:outputText value="#{t.ticket}" />
+                                    </p:column>
 
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Ime i prezime" />
-                                    </f:facet>
-                                    <h:outputText value="#{t.name}" />
-                                </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Ime i prezime" />
+                                        </f:facet>
+                                        <h:outputText value="#{t.name}" />
+                                    </p:column>
 
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Broj pasoša" />
-                                    </f:facet>
-                                    <h:outputText value="#{t.passport}" />
-                                </p:column>
-
-                            </p:dataTable>
-                        </p:outputPanel>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Broj pasoša" />
+                                        </f:facet>
+                                        <h:outputText value="#{t.passport}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </p:outputPanel>
+                        </h:panelGroup>
                     </h:form>
 
                 </center>

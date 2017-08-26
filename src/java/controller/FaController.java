@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Named;
@@ -153,8 +154,16 @@ public class FaController {
         finishedFlights = new ArrayList<Flight>();
         toDoFlights = new ArrayList<Flight>();
         Date d = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        int month1 = cal.get(Calendar.MONTH);
+        int day1 = cal.get(Calendar.DAY_OF_MONTH);
         for(Flight f: allFlights){
-            if(f.getDepartureDate().before(d))finishedFlights.add(f);
+            cal.setTime(f.getDepartureDate());
+            int month2 = cal.get(Calendar.MONTH);
+            int day2 = cal.get(Calendar.DAY_OF_MONTH);
+            if (month2==month1 && day1==day2) toDoFlights.add(f);
+            else if(f.getDepartureDate().before(d))finishedFlights.add(f);
             else toDoFlights.add(f);
         }
         doneFlights = finishedFlights.size();
@@ -167,7 +176,6 @@ public class FaController {
 
     public void changeAirline() {
 
-        System.out.println(airline_selected);
 
         for (Airline a : airlines) {
             if (airline_selected.equals(a.getName())) {

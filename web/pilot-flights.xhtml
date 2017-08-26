@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Stjuardesa letovi</title>
+        <title>Pilot letovi</title>
         <style>
             .ui-layout-unit{
                 border: none;
@@ -52,24 +52,43 @@
 
             <p:layoutUnit position="center" gutter="0" >  
                 <h:form>  
-                    <p:growl id="messages"/>
 
                     <p:menubar style="width: 100%">
-                        <p:menuitem value="Moji podaci" icon="ui-icon-person"   action="fa-home?faces-redirect=true" />      
-                        <p:menuitem value="Letovi" action="fa-flights?faces-redirect=true" />
+                        <p:menuitem value="Moji podaci" icon="ui-icon-person"   action="pilot-home?faces-redirect=true" />      
+                        <p:menuitem value="Letovi" action="pilot-flights?faces-redirect=true" />
                         <f:facet name="options">
-                            <p:commandButton action="#{faController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
+                            <p:commandButton action="#{pilotController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
                         </f:facet>
                     </p:menubar>
                 </h:form>
 
                 <center>
                     <p:messages id="famessage" showDetail="true" autoUpdate="true" closable="true" />
+                    
+                    <h:form>
+                        <p:outputPanel rendered="#{pilotController.showCurrent}" >
+                            <h1>Trenutni let</h1>
+                            <h:panelGrid columns="2" style="width:30%">
+                                Od - do:
+                                <p:outputLabel style="font-weight: bolder" value="#{pilotController.currentFlight.airportFrom.city} (#{pilotController.currentFlight.airportFrom.iata}) - #{pilotController.currentFlight.airportTo.city} (#{pilotController.currentFlight.airportTo.iata}) " />
+                                Polazni gate: 
+                                <p:outputLabel style="font-weight: bolder" value="#{pilotController.currentFlight.gateFrom.id}"/>
+                                Dolazni gate: 
+                                <p:outputLabel style="font-weight: bolder" value="#{pilotController.currentFlight.gateTo.id}"/>    
+                                Status: 
+                                <p:outputLabel style="font-weight: bolder" value="#{pilotController.currentFlight.status}"/>  
+                            </h:panelGrid>
+                            <p:commandButton value="Ažuriranje" action="#{pilotController.syncCurrentFlight()}"/> 
+                        </p:outputPanel>
+                    </h:form>
 
-                    <h:form id="form">
-                        <h1>Budući letovi</h1>
+                    <br></br>
+                    <br></br>
+                    
+                    <h:form> 
+                        <h1>Aktuealni letovi:</h1>
                         <p:outputPanel >
-                            <p:dataTable value="#{faController.toDoFlights}" var="f" >
+                            <p:dataTable value="#{pilotController.toDoFlights}" var="f" >
                                 <p:column headerText="Od">
                                     #{f.airportFrom.city}
                                 </p:column>
@@ -78,7 +97,7 @@
                                     #{f.airportTo.city}
                                 </p:column>
 
-                                <p:column headerText="Polazak">
+                                <p:column headerText="Polazak" sortBy="#{f.departureDate}">
                                     #{f.departureDate} - #{f.departureTime}
                                 </p:column>
 
@@ -91,46 +110,24 @@
                                         <f:convertNumber maxFractionDigits="0" />
                                     </h:outputText>
                                     h  &nbsp; #{f.duration%60} min
+                                </p:column>
+                                
+                                <p:column headerText="Status">
+                                    #{f.status}
                                 </p:column>
 
                                 <p:column headerText="Detaljnije">
-                                    <p:commandLink update=":form:flightDetail" oncomplete="PF('flightDialog').show()" title="Detalji o letu">
-                                        <h:outputText styleClass="ui-icon ui-icon-search" style="margin:0 auto;" />
-                                        <f:setPropertyActionListener value="#{f}" target="#{faController.selectedFlight}" />
-                                    </p:commandLink>
+                                    <p:commandLink value="Podaci o letu" actionListener="#{pilotController.seeFlight(f)}" action="pilot-flight-detail?faces-redirect=true" target="_blank"/>
                                 </p:column>
                             </p:dataTable>
                         </p:outputPanel>
-                        <p:dialog header="Detalji o letu" widgetVar="flightDialog"  showEffect="fade" hideEffect="fade" resizable="false">
-                            <p:outputPanel id="flightDetail" style="text-align:center;">
-                                <p:panelGrid  columns="2" rendered="#{not empty faController.selectedFlight}" columnClasses="label,value">
-                                    <f:facet name="header">
-                                        <p:outputLabel value="#{faController.selectedFlight.airportFrom.name} - #{faController.selectedFlight.airportTo.name}" />
-                                    </f:facet>
-
-                                    <h:outputText value="Datum poletanja" />
-                                    <h:outputText value="#{faController.selectedFlight.departureDate}" />
-
-                                    <h:outputText value="Vreme poletanja" />
-                                    <h:outputText value="#{faController.selectedFlight.departureTime}" />
-
-                                    <h:outputText value="Polazni gate" />
-                                    <h:outputText value="#{faController.selectedFlight.gateFrom.id}" />
-
-                                    <h:outputText value="Dolazni gate" />
-                                    <h:outputText value="#{faController.selectedFlight.gateTo.id}" />
-                                    
-                                    <h:outputText value="Broj slobodnih sedišta" />
-                                    <h:outputText value="#{faController.selectedFlight.seats} / #{faController.selectedFlight.airplaneId.maxSeats}" />
-                                </p:panelGrid>
-                            </p:outputPanel>
-                        </p:dialog>
                     </h:form>
-
-                    <h:form >
-                        <h1>Prošli letovi</h1>
+                    
+                    
+                    <h:form> 
+                        <h1>Prošli letovi:</h1>
                         <p:outputPanel >
-                            <p:dataTable value="#{faController.finishedFlights}" var="f" >
+                            <p:dataTable value="#{pilotController.finishedFlights}" var="f" >
                                 <p:column headerText="Od">
                                     #{f.airportFrom.city}
                                 </p:column>
@@ -139,7 +136,7 @@
                                     #{f.airportTo.city}
                                 </p:column>
 
-                                <p:column headerText="Polazak">
+                                <p:column headerText="Polazak" sortBy="#{f.departureDate}">
                                     #{f.departureDate} - #{f.departureTime}
                                 </p:column>
 
@@ -153,12 +150,16 @@
                                     </h:outputText>
                                     h  &nbsp; #{f.duration%60} min
                                 </p:column>
-
-
+                                
+                                <p:column headerText="Status">
+                                    #{f.status}
+                                </p:column>
 
                             </p:dataTable>
                         </p:outputPanel>
                     </h:form>
+
+                    
 
                 </center>
             </p:layoutUnit>

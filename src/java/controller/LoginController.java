@@ -902,6 +902,7 @@ public class LoginController {
         this.selectedFlight = f;
         pom = new ArrayList<Flight>(1);
         pom.add(f);
+        ticketReservationList=null;
         return "Reservation";
     }
 
@@ -1015,7 +1016,8 @@ public class LoginController {
         org.hibernate.Query query = session.getNamedQuery("Tickets.findByPassportNo");
         query.setString("passportNo", passport1);
         List<Tickets> ttt = query.list();
-        ticketId = ttt.get(0).getTicketNo()+10000000;
+        //ticketId = ttt.get(0).getTicketNo()+10000000;
+        ticketId = t1.getTicketNo() +10000000;
         session.getTransaction().commit();
         session.close();
         
@@ -1035,6 +1037,7 @@ public class LoginController {
             t.ticket = ticketsCode.get(i).toString();
             ticketReservationList.add(t);
         }
+        
 
         t1 = null;
         t2 = null;
