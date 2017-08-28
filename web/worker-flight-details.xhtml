@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Detalji o letu</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-raWfqJk-qpVEAAfuKETFOWtr-Kp2o8o"
+        type="text/javascript"></script>
+    </h:head>
+    <h:body>
+
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="color: #ffffff ;float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div> 
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="center" gutter="0" >  
+                <h:form>  
+
+                    <p:menubar style="width: 100%">
+                        <p:menuitem value="Aktuelni letovi" icon="ui-icon-person"   action="worker-home?faces-redirect=true" />    
+                        <f:facet name="options">
+                            <p:commandButton action="#{workerController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
+                        </f:facet>
+                    </p:menubar>
+                </h:form>
+
+                <center>
+
+                    <h:form>
+                        <h1>Let #{workerController.flight_selected.airportFrom.city} ( #{workerController.flight_selected.airportFrom.iata}) - 
+                            #{workerController.flight_selected.airportTo.name} (#{workerController.flight_selected.airportTo.iata})  </h1>
+
+
+                        <p:fieldset legend="Posada leta" toggleSpeed="500" toggleable="true">       
+                            <h:panelGrid columns="2" style="width:30%">
+                                Kapetan: 
+                                <p:outputLabel value="#{workerController.flight_selected.pilot.name}" style="font-weight: bolder"/>
+                                Kopilot: 
+                                <p:outputLabel value="#{workerController.flight_selected.coplot.name}" style="font-weight: bolder"/>
+                                Stjuardesa1: 
+                                <p:outputLabel value="#{workerController.flight_selected.fa1.name}" style="font-weight: bolder"/>
+                                Stjuardesa2: 
+                                <p:outputLabel value="#{workerController.flight_selected.fa2.name}" style="font-weight: bolder"/>
+                                Stjuardesa3: 
+                                <p:outputLabel value="#{workerController.flight_selected.fa3.name}" style="font-weight: bolder"/>
+                                Stjuardesa4: 
+                                <p:outputLabel value="#{workerController.flight_selected.fa4.name}" style="font-weight: bolder"/>
+                                Stjuardesa5: 
+                                <p:outputLabel value="#{workerController.flight_selected.fa5.name}" style="font-weight: bolder"/>                        
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <br></br>
+                        <p:fieldset legend="Ostali podaci" toggleSpeed="500" toggleable="true">
+                            <h:panelGrid columns="2">
+                                Polazni gate:
+                                <p:outputLabel  value="#{workerController.flight_selected.gateFrom.id}" style="font-weight: bolder"/>
+                                Dolazni gate:
+                                <p:outputLabel  value="#{workerController.flight_selected.gateTo.id}" style="font-weight: bolder"/>
+                                Avion:
+                                <p:outputLabel value="#{workerController.flight_selected.airplaneId.name} (#{workerController.flight_selected.airplaneId.licence.MName.name} #{workerController.flight_selected.airplaneId.licence.name}) " style="font-weight: bolder"/>
+                                Datum polaska i vreme:
+                                <p:outputLabel value="#{workerController.flight_selected.departureDate}  #{pilotController.flight_selected.departureTime}" style="font-weight: bolder"/>
+                                Cena avionske karte:
+                                <p:outputLabel  value="#{workerController.flight_selected.price}" style="font-weight: bolder"/>
+                                Popunjenost:
+                                <p:outputLabel  value="#{workerController.flight_selected.seats} / #{workerController.flight_selected.airplaneId.maxSeats}" style="font-weight: bolder"/>
+                            </h:panelGrid>
+                            <br></br>
+                        </p:fieldset>
+
+                        <br></br>
+                        <br></br>
+                        <h2>Promene pilota:</h2>
+                        <p:outputPanel >
+                            <p:dataTable value="#{workerController.radioTowers}" var="r" style="width: 50%" >
+                                <p:column headerText="Radio Toranj">
+                                    #{r.radioTower.name}
+                                </p:column>
+
+                                <p:column headerText="Status">
+                                    #{r.status}
+                                </p:column>
+
+                                <p:column headerText="Novo ocekivano vreme">
+                                    <h:outputText value="#{r.number/60}">
+                                        <f:convertNumber maxFractionDigits="0" />
+                                    </h:outputText>
+                                    :  #{r.number%60} 
+                                </p:column>
+
+
+                            </p:dataTable>
+                        </p:outputPanel>      
+                    </h:form>
+
+                    <br></br>
+                    <br></br>
+                    <h2>Mapa leta:</h2>
+                    <p:gmap center="44.815333,15.2643691" zoom="4" type="HYBRID" style="width:65%;height:600px" model="#{workerController.googleMap}" />
+
+                    
+
+
+                </center>
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
+    </h:body>
+</html>
+

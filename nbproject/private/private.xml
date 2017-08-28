@@ -5,7 +5,8 @@
         <group>
             <file>file:/C:/Users/Korisnik/Documents/NetBeansProjects/akpiaprj/src/java/controller/PilotController.java</file>
             <file>file:/C:/Users/Korisnik/Documents/NetBeansProjects/akpiaprj/web/pilot-flights.xhtml</file>
-            <file>file:/C:/Users/Korisnik/Documents/NetBeansProjects/akpiaprj/web/pilot-home.xhtml</file>
+            <file>file:/C:/Users/Korisnik/Documents/NetBeansProjects/akpiaprj/web/index.xhtml</file>
+            <file>file:/C:/Users/Korisnik/Documents/NetBeansProjects/akpiaprj/web/pilot-flight-update.xhtml</file>
         </group>
     </open-files>
 </project-private>

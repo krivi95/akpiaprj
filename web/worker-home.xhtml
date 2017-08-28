@@ -1,12 +1,125 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Radnik home</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
     </h:head>
     <h:body>
-        Hello from Facelets
+
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="color: #ffffff ;float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div> 
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="center" gutter="0" >  
+                <h:form>  
+
+                    <p:menubar style="width: 100%">
+                        <p:menuitem value="Aktuelni letovi" icon="ui-icon-person"   action="worker-home?faces-redirect=true" />    
+                        <f:facet name="options">
+                            <p:commandButton action="#{workerController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
+                        </f:facet>
+                    </p:menubar>
+                </h:form>
+
+                <center>
+                    <p:messages id="workermessage" showDetail="true" autoUpdate="true" closable="true" />
+                    
+                                        
+                    <h:form> 
+                        <h1>Aktuealni letovi:</h1>
+                        <p:outputPanel >
+                            <p:dataTable value="#{workerController.currentFlights}" var="f"  paginator="true" rowsPerPageTemplate="10,20,50">
+                                <p:column headerText="Od">
+                                    #{f.airportFrom.city}
+                                </p:column>
+
+                                <p:column headerText="Od">
+                                    #{f.airportTo.city}
+                                </p:column>
+
+                                <p:column headerText="Polazak" sortBy="#{f.departureDate}">
+                                    #{f.departureDate} - #{f.departureTime}
+                                </p:column>
+
+                                <p:column headerText="Avion">
+                                    #{f.airplaneId.name}
+                                </p:column>
+
+                                <p:column headerText="Trajanje leta">
+                                    <h:outputText value="#{f.duration/60}">
+                                        <f:convertNumber maxFractionDigits="0" />
+                                    </h:outputText>
+                                    h  &nbsp; #{f.duration%60} min
+                                </p:column>
+                                
+                                <p:column headerText="Status">
+                                    #{f.status}
+                                </p:column>
+
+                                <p:column headerText="Detaljnije">
+                                    <p:commandLink value="Podaci o letu" actionListener="#{workerController.showFlight(f)}" action="worker-flight-details?faces-redirect=true" target="_blank"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </h:form>
+                    
+                    
+                    
+
+                    
+
+                </center>
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
     </h:body>
 </html>
 
