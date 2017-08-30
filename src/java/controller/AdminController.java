@@ -1063,7 +1063,7 @@ public class AdminController {
             session.beginTransaction();
             org.hibernate.Query query = session.getNamedQuery("Airplane.findByRented");
             query.setInteger("rented", 1);
-            airplanesCharter = query.list();
+            airplanesCharter = query.list(); System.out.println(airplanesCharter.size());
             session.getTransaction().commit();
             session.close();
             airplanesCharterNames = new ArrayList<String>();
@@ -1099,7 +1099,7 @@ public class AdminController {
             }
 
             if (!charter) {
-                for (Airplane a : airplanesRegular) {
+                for (Airplane a : airplanesCharter) {
                     if (airplane_name_selected.contains(a.getName())) {
                         airplane_selected = a;
                         break;
@@ -1131,6 +1131,7 @@ public class AdminController {
                         break;
                     }
                 }
+                pilotsFromSelectedAirline = new ArrayList<String>();
                 for (User u : pilots) {
                     if (u.getAirline().getId() == airplane_selected.getAirlineRenting().getId()) {
                         pilotsFromSelectedAirline.add(u.getName());

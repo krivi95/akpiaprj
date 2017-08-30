@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Radnik rent a plane</title>
+        <style>
+            .ui-layout-unit{
+                border: none;
+                padding: 0;
+            }
+            .heder_footer .ui-layout-unit-content{
+                background: #0d387c;
+            }
+            p{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+            }
+            p:hover{
+                cursor: pointer;
+            }
+            .home{
+                padding-top: 0;
+                font-size: xx-large;
+                font-family:  fantasy;
+                padding: 0;
+                margin:0;
+                color: #ffffff !important;
+                text-decoration: none;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <p:layout fullPage="true" >
+            <p:layoutUnit position="north" size="60" gutter="0" closable="true" styleClass="heder_footer" >
+
+                <div style="color: #ffffff ;float:left">
+                    <p>
+                        <p:spacer width="20"></p:spacer> 
+                        <p:link outcome="index" value="Avio karte" styleClass="home"></p:link>
+                    </p>
+                </div> 
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="center" gutter="0" >  
+                <h:form>  
+
+                    <p:menubar style="width: 100%">
+                        <p:menuitem value="Aktuelni letovi"  action="worker-home?faces-redirect=true" />    
+                        <p:menuitem value="Novi avion"  action="#{workerController.chooseNewAirplane()}" />  
+                        <f:facet name="options">
+                            <p:commandButton action="#{workerController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
+                        </f:facet>
+                    </p:menubar>
+                </h:form>
+
+                <center>
+                    <p:messages id="workermessage" showDetail="true" autoUpdate="true" closable="true" />
+
+
+                    <h:form> 
+                        <h1>Pretraga aviona:</h1>
+                        <h:panelGrid columns="2">
+                            Proizvođač:
+                            <p:selectOneMenu   value="#{workerController.manufacturer_selected}"  required="true" requiredMessage="Izaberite proizvođača aviona.">
+                                <f:selectItems value="#{workerController.manufacturerNames}"  />
+                                <p:ajax event="change" update="model" listener="#{workerController.updateModelList()}" />
+                            </p:selectOneMenu >
+                            Model aviona:
+                            <p:selectOneMenu id="model"  value="#{workerController.model_selected}" >
+                                <f:selectItems value="#{workerController.modelNames}"  />
+                            </p:selectOneMenu >
+                            Minimalni broj sedišta:
+                            <p:spinner value="#{workerController.minSeates}" size="3" required="true" requiredMessage="Unesite minimalan broj sedišta:" />
+                            Datum iznajmljivanja:
+                            <h:panelGroup>
+                                <p:calendar value="#{workerController.from}" placeholder="Od" required="true" requiredMessage="Unesite datum od koga želite da iznajmite avion."/> 
+                                <p:calendar value="#{workerController.to}" placeholder="Do" required="true" requiredMessage="Unesite datum do koga želite da iznajmite avion."/> 
+                            </h:panelGroup>
+                        </h:panelGrid>
+                            <p:commandButton value="Pretraga" actionListener="#{workerController.search()}" ajax="true" update="search2"/>
+                    </h:form>
+
+                    <h:form id="search2">
+                        <p:outputPanel autoUpdate="true" rendered="#{workerController.show}">
+                            <h1>Rezultat pretrage:</h1>
+                            <p:dataTable value="#{workerController.airplanes_search}" var="a">
+                                <p:column headerText="Oznaka">
+                                    #{a.name}
+                                </p:column>
+
+                                <p:column headerText="Broj sedišta">
+                                    #{a.maxSeats}
+                                </p:column>
+
+                                <p:column headerText="Licenca" >
+                                    #{a.licence.licence}
+                                </p:column>
+
+                                <p:column headerText="Model">
+                                    #{a.licence.MName.name} #{a.licence.name}
+                                </p:column>
+                                
+                                <p:column headerText="Avio-kompanija">
+                                    #{a.airline.name}
+                                </p:column>
+                                
+                                <p:column headerText="Ponuda">
+                                    <p:inputNumber value="#{workerController.price}" symbol=" €" symbolPosition="s" />
+                                </p:column>
+                                
+                                <p:column headerText="Nova ponuda">
+                                    <p:commandLink value="Potvrdi"  actionListener="#{workerController.makeAnOffer(a)}"/>
+                                </p:column>                          
+                                
+                            </p:dataTable>
+
+                        </p:outputPanel>
+
+                    </h:form>
+
+
+
+
+
+
+                </center>
+            </p:layoutUnit>
+
+
+
+            <p:layoutUnit position="south" size="40" gutter="0" closable="true" styleClass="heder_footer">
+                <div style="color: #ffffff">
+                    Nikola Krivačević ©2017
+                </div>
+            </p:layoutUnit>
+
+        </p:layout>
+    </h:body>
+</html>
+
