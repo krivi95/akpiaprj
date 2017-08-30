@@ -764,8 +764,6 @@ public class AdminController {
         session.beginTransaction();
         session.save(newAirport);
         session.saveOrUpdate(rt);
-        session.getTransaction().commit();
-        session.close();
 
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Uspešno dadat aerodrom."));
 
@@ -774,6 +772,10 @@ public class AdminController {
 
         gates = new ArrayList<Gate>();
         gate = new Gate();
+        
+        
+        session.getTransaction().commit();
+        session.close();
 
         return null;
 
