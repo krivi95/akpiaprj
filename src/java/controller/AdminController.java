@@ -1063,7 +1063,8 @@ public class AdminController {
             session.beginTransaction();
             org.hibernate.Query query = session.getNamedQuery("Airplane.findByRented");
             query.setInteger("rented", 1);
-            airplanesCharter = query.list(); System.out.println(airplanesCharter.size());
+            airplanesCharter = query.list();
+            System.out.println(airplanesCharter.size());
             session.getTransaction().commit();
             session.close();
             airplanesCharterNames = new ArrayList<String>();
@@ -1098,8 +1099,10 @@ public class AdminController {
                 }
             }
 
-            if (!charter) {
-                for (Airplane a : airplanesCharter) {
+            if (!charter) {                
+                session = hibernate.HibernateUtil.getSessionFactory().openSession();
+                session.beginTransaction();
+                for (Airplane a : airplanesRegular) {
                     if (airplane_name_selected.contains(a.getName())) {
                         airplane_selected = a;
                         break;
@@ -1108,12 +1111,17 @@ public class AdminController {
                 pilotsFromSelectedAirline = new ArrayList<String>();
                 for (User u : pilots) {
                     if (u.getAirline().getId() == airplane_selected.getAirline().getId()) {
-                        pilotsFromSelectedAirline.add(u.getName());
+                        boolean ok = false;
+                        query = session.createQuery("SELECT l from Licences l where l.user=:pilot");
+                        query.setEntity("pilot", u);
+                        List<Licences> licences = query.list();
+                        for(Licences l: licences)if(l.getLicenceNo().contains(airplane_selected.getLicence().getLicence()))ok=true;
+                        if (ok) {
+                            pilotsFromSelectedAirline.add(u.getName());
+                        }
                     }
                 }
                 Airline aa = airplane_selected.getAirline();
-                session = hibernate.HibernateUtil.getSessionFactory().openSession();
-                session.beginTransaction();
                 query = session.createQuery("SELECT u FROM User u WHERE u.type = 'stjuardesa' AND u.airline = :airline");
                 query.setEntity("airline", aa);
                 fa = query.list();
@@ -1125,6 +1133,9 @@ public class AdminController {
                     faNames.add(u.getName());
                 }
             } else {
+                //charter flight                
+                session = hibernate.HibernateUtil.getSessionFactory().openSession();
+                session.beginTransaction();
                 for (Airplane a : airplanesCharter) {
                     if (airplane_name_selected.contains(a.getName())) {
                         airplane_selected = a;
@@ -1134,12 +1145,17 @@ public class AdminController {
                 pilotsFromSelectedAirline = new ArrayList<String>();
                 for (User u : pilots) {
                     if (u.getAirline().getId() == airplane_selected.getAirlineRenting().getId()) {
-                        pilotsFromSelectedAirline.add(u.getName());
+                        boolean ok = false;
+                        query = session.createQuery("SELECT l from Licences l where l.user=:pilot");
+                        query.setEntity("pilot", u);
+                        List<Licences> licences = query.list();
+                        for(Licences l: licences)if(l.getLicenceNo().contains(airplane_selected.getLicence().getLicence()))ok=true;
+                        if (ok) {
+                            pilotsFromSelectedAirline.add(u.getName());
+                        }
                     }
                 }
                 Airline aa = airplane_selected.getAirlineRenting();
-                session = hibernate.HibernateUtil.getSessionFactory().openSession();
-                session.beginTransaction();
                 query = session.createQuery("SELECT u FROM User u WHERE u.type = 'stjuardesa' AND u.airline = :airline");
                 query.setEntity("airline", aa);
                 fa = query.list();
@@ -1157,22 +1173,25 @@ public class AdminController {
 
     public String addFlight() {
         //checkings
-        if(checkForRunwayOverloadFrom()) return "admin-flight-add";
-        if(checkForRunwayOverloadTo()) return "admin-flight-add";
-        if(flight_selected_Airport_From==flight_selected_Airport_To){
+        if (checkForRunwayOverloadFrom()) {
+            return "admin-flight-add";
+        }
+        if (checkForRunwayOverloadTo()) {
+            return "admin-flight-add";
+        }
+        if (flight_selected_Airport_From == flight_selected_Airport_To) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Isti dolazni i odlazni aerodrom."));
             return "admin-flight-add";
         }
-        if(pilot1.equals(pilot2)){
+        if (pilot1.equals(pilot2)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Dva puta izabran isti pilot."));
             return "admin-flight-add";
         }
-        if( fa1.equals(fa2) || fa1.equals(fa3) || fa1.equals(fa4) || fa1.equals(fa5) || fa2.equals(fa3) || fa2.equals(fa4) || fa2.equals(fa5) || fa3.equals(fa4)|| fa3.equals(fa5) || (fa4!=null && fa4.equals(fa5)) ){
+        if (fa1.equals(fa2) || fa1.equals(fa3) || fa1.equals(fa4) || fa1.equals(fa5) || fa2.equals(fa3) || fa2.equals(fa4) || fa2.equals(fa5) || fa3.equals(fa4) || fa3.equals(fa5) || (fa4 != null && fa4.equals(fa5))) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Greška.", "Više puta izabrana jedna stjuardesa."));
             return "admin-flight-add";
         }
-        
-        
+
         Flight f = new Flight();
         //setting airports
         f.setAirportFrom(flight_selected_Airport_From);
@@ -1250,33 +1269,36 @@ public class AdminController {
         }
 
         //reorganizing raio towers(first two are from and to)
-        
         RadioTower r1 = null;
         RadioTower r2 = null;
-        int i=0;
-        int pos=0;
-        for(RadioTower r: radioTowers){
-            if(r.getName().equals(f.getAirportFrom().getCity()))pos=i;
+        int i = 0;
+        int pos = 0;
+        for (RadioTower r : radioTowers) {
+            if (r.getName().equals(f.getAirportFrom().getCity())) {
+                pos = i;
+            }
             i++;
         }
         r1 = radioTowers.remove(pos);
-        i=0;
-        for(RadioTower r: radioTowers){
-            if(r.getName().equals(f.getAirportTo().getCity()))pos=i;
+        i = 0;
+        for (RadioTower r : radioTowers) {
+            if (r.getName().equals(f.getAirportTo().getCity())) {
+                pos = i;
+            }
             i++;
         }
-        r2 = radioTowers.remove(pos); 
+        r2 = radioTowers.remove(pos);
         if (r1.getName().equals(f.getAirportFrom().getCity())) {
             radioTowers.add(0, r1);
             radioTowers.add(r2);
         } else {
             radioTowers.add(0, r2);
             radioTowers.add(r1);
-        }    
-        
+        }
+
         //ControlCheck
         List<ControlCheck> cc = new ArrayList<ControlCheck>(radioTowers.size());
-        for(RadioTower r: radioTowers){
+        for (RadioTower r : radioTowers) {
             ControlCheck c = new ControlCheck();
             c.setFlightId(f);
             c.setRadioTower(r);
@@ -1347,13 +1369,13 @@ public class AdminController {
         Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         session.save(f);
-        for(ControlCheck c:cc){
+        for (ControlCheck c : cc) {
             session.save(c);
         }
         if (!charter) {
             if (f1 != null) {
                 session.save(f1);
-                for(ControlCheck c:cc){
+                for (ControlCheck c : cc) {
                     ControlCheck c1 = new ControlCheck();
                     c1.setFlightId(f1);
                     c1.setRadioTower(c.getRadioTower());
@@ -1363,7 +1385,7 @@ public class AdminController {
             }
             if (f2 != null) {
                 session.save(f2);
-                for(ControlCheck c:cc){
+                for (ControlCheck c : cc) {
                     ControlCheck c1 = new ControlCheck();
                     c1.setFlightId(f2);
                     c1.setRadioTower(c.getRadioTower());
@@ -1373,7 +1395,7 @@ public class AdminController {
             }
             if (f3 != null) {
                 session.save(f3);
-                for(ControlCheck c:cc){
+                for (ControlCheck c : cc) {
                     ControlCheck c1 = new ControlCheck();
                     c1.setFlightId(f3);
                     c1.setRadioTower(c.getRadioTower());
@@ -1383,7 +1405,7 @@ public class AdminController {
             }
             if (f4 != null) {
                 session.save(f4);
-                for(ControlCheck c:cc){
+                for (ControlCheck c : cc) {
                     ControlCheck c1 = new ControlCheck();
                     c1.setFlightId(f4);
                     c1.setRadioTower(c.getRadioTower());
@@ -1394,7 +1416,7 @@ public class AdminController {
         }
         session.getTransaction().commit();
         session.close();
-        
+
         /*
          session = hibernate.HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -1403,7 +1425,7 @@ public class AdminController {
         }
         session.getTransaction().commit();
         session.close();
-*/
+         */
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Uspešno dodat novi let."));
         return "admin-flight-add";
     }

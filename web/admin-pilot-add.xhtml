@@ -108,7 +108,7 @@
                                 <f:selectItems value="#{adminController.modelNames}"  />
                             </p:selectOneMenu >
                             Broj licence:
-                            <p:inputText id="broj" placeholder="bbbbbbb"  value="#{adminController.licenceNo}" required="true" requiredMessage="Unesite sedmocifreni broj licence"></p:inputText>                           
+                            <p:inputText id="broj" onblur="licenceCheck()" placeholder="bbbbbbb"  value="#{adminController.licenceNo}" required="true" requiredMessage="Unesite sedmocifreni broj licence"></p:inputText>                           
                         </h:panelGrid>
                         <p:commandButton value="Unesi" action="#{adminController.addLicence()}"></p:commandButton>
                     </h:form>

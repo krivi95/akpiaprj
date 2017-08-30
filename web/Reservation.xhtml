@@ -188,7 +188,7 @@
 
                     <br></br>
 
-                    <h:form>
+                    <h:form id="aaaaaa">
                         <h:panelGroup >
                             <p:outputPanel id="ddd"  autoUpdate="true">
                                 <p:dataTable style="width:1200px;" id="tbl" var="t" value="#{loginController.ticketReservationList}" rendered="#{loginController.showTickets}">
@@ -216,8 +216,13 @@
                             </p:outputPanel>
                         </h:panelGroup>
                     </h:form>
-
+                    <p:commandButton value="Odštampaj karte"  type="button" icon="ui-icon-print" style="display:block;margin-bottom: 20px"  >
+                        <p:printer target="aaaaaa" />
+                    </p:commandButton>
                 </center>
+
+
+
             </p:layoutUnit>
 
 
