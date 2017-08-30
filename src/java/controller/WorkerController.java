@@ -431,7 +431,7 @@ public class WorkerController {
         session.getTransaction().commit();
         session.close();
         
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Ponuda je prihvacena."));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Ponuda je poslata."));
     }
     
     public void approveOffer(Rental r){

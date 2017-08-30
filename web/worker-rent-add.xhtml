@@ -96,6 +96,7 @@
                     <h:form id="search2">
                         <p:outputPanel autoUpdate="true" rendered="#{workerController.show}">
                             <h1>Rezultat pretrage:</h1>
+                            Ponuda: <p:inputNumber value="#{workerController.price}" symbol=" €" symbolPosition="s" />
                             <p:dataTable value="#{workerController.airplanes_search}" var="a">
                                 <p:column headerText="Oznaka">
                                     #{a.name}
@@ -116,11 +117,7 @@
                                 <p:column headerText="Avio-kompanija">
                                     #{a.airline.name}
                                 </p:column>
-                                
-                                <p:column headerText="Ponuda">
-                                    <p:inputNumber value="#{workerController.price}" symbol=" €" symbolPosition="s" />
-                                </p:column>
-                                
+                                                                
                                 <p:column headerText="Nova ponuda">
                                     <p:commandLink value="Potvrdi"  actionListener="#{workerController.makeAnOffer(a)}"/>
                                 </p:column>                          

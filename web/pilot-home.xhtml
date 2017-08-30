@@ -57,10 +57,6 @@
                     <p:menubar style="width: 100%">
                         <p:menuitem value="Moji podaci" icon="ui-icon-person"   action="pilot-home?faces-redirect=true" />      
                         <p:menuitem value="Letovi" action="pilot-flights?faces-redirect=true" />
-                        <p:submenu label="Rent a plane" >
-                            <p:menuitem value="Pretraga" action="worker-rent-add?faces-redirect=true" icon="ui-icon-zoomin" />
-                            <p:menuitem value="Ponude"  action="admin-airport-look?faces-redirect=true" icon="ui-icon-contact" />
-                        </p:submenu>
                         <f:facet name="options">
                             <p:commandButton action="#{pilotController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
                         </f:facet>

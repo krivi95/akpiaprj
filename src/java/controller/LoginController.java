@@ -587,15 +587,15 @@ public class LoginController {
         }
         currentUser = user;
         httpsession.setAttribute("currentuser", user);
-        CurrentUser.user=user;
+        CurrentUser.user = user;
 
-        if (user.getType().equals("pilot") && user.getPilotFirstLogin()==0) {
+        if (user.getType().equals("pilot") && user.getPilotFirstLogin() == 0) {
             return "pilot-home?faces-redirect=true";
         }
-        if (user.getType().equals("pilot") && user.getPilotFirstLogin()==1) {
+        if (user.getType().equals("pilot") && user.getPilotFirstLogin() == 1) {
             return "pilot-first-login?faces-redirect=true";
         }
-        
+
         if (user.getType().equals("stjuardesa")) {
             return "fa-home?faces-redirect=true";
         }
@@ -647,7 +647,6 @@ public class LoginController {
 
     public String register() {
 
-
         User user = new User();
         user.setUsername(username_new);
         user.setPassword(password_new);
@@ -656,6 +655,9 @@ public class LoginController {
         user.setBirth(birth_new);
         user.setType(type_new);
         user.setPending(1);
+        if (type_new.equals("pilot")) {
+            user.setPilotFirstLogin(1);
+        }
 
         for (Airline a : airlines) {
             if (a.getName().equals(this.airline_new)) {
@@ -754,7 +756,7 @@ public class LoginController {
             //layover flights only
             session = hibernate.HibernateUtil.getSessionFactory().openSession();
             session.beginTransaction();
-            query = session.createQuery("select f1,f2 from Flight f1, Flight f2 "
+            query = session.createQuery("select  f1,f2 from Flight f1, Flight f2 "
                     + "where f1.airportFrom= :start AND f2.airportTo=:finish "
                     + "AND f1.airportTo = f2.airportFrom AND f1.departureDate=:d AND f1.departureDate=:d ");
             query.setString("start", start);
@@ -770,7 +772,9 @@ public class LoginController {
                 Flight f2 = (Flight) o[1];
                 Flight f = new Flight();
                 f.setDuration(f1.getDuration() + f2.getDuration());
-                f.setCompany(f1.getCompany());
+                Airline a = f1.getCompany();
+                f.setCompany(a);
+                System.out.println(f.getCompany());
                 f.setAirportFrom(f1.getAirportFrom());
                 f.setAirportTo(f2.getAirportTo());
                 f.setDepartureDate(f1.getDepartureDate());
@@ -779,11 +783,15 @@ public class LoginController {
                 f.setGateTo(f2.getGateTo());
                 f.setSeats(f1.getSeats());
                 f.setPrice(f1.getPrice() + f2.getPrice());
-                searchedFlightsTo.add(f);
-
-                //TODO: slobona sedista
-                //TODO: cena
-                System.out.println(f1.getCompany());
+                boolean add = true;
+                for (Flight ff : searchedFlightsTo) {
+                    if (ff.equals(f)) {
+                        add = false;
+                    }
+                }
+                if (add) {
+                    searchedFlightsTo.add(f);
+                }
 
             }
 
@@ -875,11 +883,15 @@ public class LoginController {
                     f.setGateTo(f2.getGateTo());
                     f.setSeats(f1.getSeats());
                     f.setPrice(f1.getPrice() + f2.getPrice());
-                    searchedFlightsReturn.add(f);
-
-                    //TODO: slobona sedista
-                    //TODO: cena
-                    System.out.println(f1.getCompany());
+                    boolean add = true;
+                    for (Flight ff : searchedFlightsReturn) {
+                        if (ff.equals(f)) {
+                            add = false;
+                        }
+                    }
+                    if (add) {
+                        searchedFlightsReturn.add(f);
+                    }
 
                 }
 
@@ -902,7 +914,7 @@ public class LoginController {
         this.selectedFlight = f;
         pom = new ArrayList<Flight>(1);
         pom.add(f);
-        ticketReservationList=null;
+        ticketReservationList = null;
         return "Reservation";
     }
 
@@ -1005,7 +1017,7 @@ public class LoginController {
         if (t8 != null) {
             session.save(t8);
         }
-        selectedFlight.setSeats(selectedFlight.getSeats()-tickets);
+        selectedFlight.setSeats(selectedFlight.getSeats() - tickets);
         //selectedFlight.setStatus(" ");
         session.saveOrUpdate(selectedFlight);
         session.getTransaction().commit();
@@ -1017,11 +1029,9 @@ public class LoginController {
         query.setString("passportNo", passport1);
         List<Tickets> ttt = query.list();
         //ticketId = ttt.get(0).getTicketNo()+10000000;
-        ticketId = t1.getTicketNo() +10000000;
+        ticketId = t1.getTicketNo() + 10000000;
         session.getTransaction().commit();
         session.close();
-        
-        
 
         ticketsCode = new ArrayList<Integer>();
         for (int i = 0; i < this.tickets; i++) {
@@ -1037,7 +1047,6 @@ public class LoginController {
             t.ticket = ticketsCode.get(i).toString();
             ticketReservationList.add(t);
         }
-        
 
         t1 = null;
         t2 = null;
@@ -1058,6 +1067,4 @@ public class LoginController {
         this.ticketReservationList = ticketReservationList;
     }
 
-    
-    
 }
