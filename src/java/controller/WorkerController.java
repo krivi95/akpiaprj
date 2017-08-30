@@ -50,11 +50,21 @@ public class WorkerController {
     private int minSeates;
     private int price;
     private Date from;
-    private Date to;
-    
+    private Date to;    
 
     private boolean show = false;
     private List<Airplane> airplanes_search;
+    
+    private List<Rental> offers;
+
+    public List<Rental> getOffers() {
+        return offers;
+    }
+
+    public void setOffers(List<Rental> offers) {
+        this.offers = offers;
+    }
+    
 
     public int getPrice() {
         return price;
@@ -252,6 +262,10 @@ public class WorkerController {
         for (Model m : models) {
             modelNames.add(m.getName());
         }
+        
+        query = session.createQuery("SELECT r FROM Rental r WHERE r.aOffering=:airline AND r.pending=1");
+        query.setEntity("airline", worker.getAirline());
+        offers = query.list();
 
         session.getTransaction().commit();
         session.close();
@@ -373,7 +387,7 @@ public class WorkerController {
                     break;
                 }
             }
-            org.hibernate.Query query = session.createQuery("SELECT a FROM Airplane a WHERE a.licence.mName=:manufacturer AND a.maxSeats>=:seats");
+            org.hibernate.Query query = session.createQuery("SELECT a FROM Airplane a WHERE a.licence.mName=:manufacturer AND a.maxSeats>=:seats AND a.airline!=NULL");
             query.setEntity("manufacturer", mm1);
             query.setInteger("seats", minSeates);
             all = query.list();
@@ -417,7 +431,34 @@ public class WorkerController {
         session.getTransaction().commit();
         session.close();
         
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Ponuda je poslata."));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Ponuda je prihvacena."));
+    }
+    
+    public void approveOffer(Rental r){
+        offers.remove(r);
+        r.setPending(0);
+        Airplane a = r.getAirplane();
+        a.setAirlineRenting(r.getARenting());
+        a.setRented(1);
+        Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        session.update(r);
+        session.update(a);
+        session.getTransaction().commit();
+        session.close();
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Ponuda je prihvaćena."));
+        
+    }
+    
+    public void deleteOffer(Rental r){
+        offers.remove(r);
+        Session session = hibernate.HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        session.delete(r);
+        session.getTransaction().commit();
+        session.close();
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info.", "Ponuda je odbijena."));
+        
     }
     
     

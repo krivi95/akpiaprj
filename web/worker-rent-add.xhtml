@@ -56,6 +56,10 @@
                     <p:menubar style="width: 100%">
                         <p:menuitem value="Aktuelni letovi"  action="worker-home?faces-redirect=true" />    
                         <p:menuitem value="Novi avion"  action="#{workerController.chooseNewAirplane()}" />  
+                        <p:submenu label="Rent a plane" >
+                            <p:menuitem value="Pretraga" action="worker-rent-add?faces-redirect=true" icon="ui-icon-zoomin" />
+                            <p:menuitem value="Ponude"  action="worker-rent-look?faces-redirect=true" icon="ui-icon-contact" />
+                        </p:submenu>
                         <f:facet name="options">
                             <p:commandButton action="#{workerController.logOut()}" value="Logout" icon="ui-icon-extlink" style="margin-right: 10px"/>
                         </f:facet>

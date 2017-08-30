@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Radnik novi avion</title>
+        <title>Radnik ponude</title>
         <style>
             .ui-layout-unit{
                 border: none;
@@ -48,6 +48,8 @@
                 </div> 
             </p:layoutUnit>
 
+
+
             <p:layoutUnit position="center" gutter="0" >  
                 <h:form>  
 
@@ -65,76 +67,41 @@
                 </h:form>
 
                 <center>
-                    <p:messages id="workermessageairplane" showDetail="true" autoUpdate="true" closable="true" />
-
-                    <script type="text/javascript">
-                        function handleDrop(event, ui) {
-                            var droppedCar = ui.draggable;
-
-                            droppedCar.fadeOut('fast');
-                        }
-                    </script>
-
+                    <p:messages id="workermessage" showDetail="true" autoUpdate="true" closable="true" />
+                    
+                                        
                     <h:form> 
-                        <h1>Dostupni avioni</h1>
-                        <p:dataTable id="availableAirplanes" value="#{workerController.airplanes}" var="a" style="width: 60%" >
-                            <p:column style="width:20px">
-                                <h:outputText id="dragIcon" styleClass="ui-icon ui-icon-arrow-4" />
-                                <p:draggable for="dragIcon" revert="true" helper="clone"/>
-                            </p:column>
-                            <p:column headerText="Oznaka">
-                                #{a.name}
-                            </p:column>
-
-                            <p:column headerText="Broj sedišta">
-                                #{a.maxSeats}
-                            </p:column>
-
-                            <p:column headerText="Licenca" >
-                                #{a.licence.licence}
-                            </p:column>
-
-                            <p:column headerText="Model">
-                                #{a.licence.MName.name} #{a.licence.name}
-                            </p:column>
-                        </p:dataTable>
-                        <br></br>
-                        <br></br>
-                        <h1>Izabrani avion</h1>
-                        <p:outputPanel id="dropArea">
-                            <p:dataTable id="selectedAirplanes" value="#{workerController.selectedAirplanes}" var="a" style="width: 60%"  >
-                                <p:column headerText="Oznaka">
-                                    #{a.name}
+                        <h1>Ponude od drugih avio kompanija</h1>
+                        <p:outputPanel >
+                            <p:dataTable value="#{workerController.offers}" var="o" id="offers"  >
+                                <p:column headerText="Ponuda od:">
+                                    #{o.ARenting.name}
                                 </p:column>
 
-                                <p:column headerText="Broj sedišta">
-                                    #{a.maxSeats}
+                                <p:column headerText="Avion">
+                                    #{o.airplane.name}
                                 </p:column>
 
-                                <p:column headerText="Licenca" >
-                                    #{a.licence.licence}
+                                <p:column headerText="Od - do">
+                                    #{o.dateFrom} - #{o.dateTo}
                                 </p:column>
 
-                                <p:column headerText="Model">
-                                    #{a.licence.MName.name} #{a.licence.name}
+                                <p:column headerText="Iznos">
+                                    #{o.offer} €
+                                </p:column>
+
+                                <p:column headerText="Akcija">
+                                    <p:commandButton value="Odobri" ajax="true" update="offers" actionListener="#{workerController.approveOffer(o)}"/>
+                                    <p:commandButton value="Obriši" ajax="true" update="offers" actionListener="#{workerController.deleteOffer(o)}"/>
                                 </p:column>
                             </p:dataTable>
                         </p:outputPanel>
-
-
-                        <p:droppable for="selectedAirplanes" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="availableAirplanes" onDrop="handleDrop">
-                            <p:ajax listener="#{workerController.onAirplaneDrop}" update="dropArea availableAirplanes" />
-                        </p:droppable>
-                        
-                        <br></br>
-                        <p:commandButton value="Potvrdi izbor" action="#{workerController.addNewPlane()}" />
-
                     </h:form>
+                    
+                    
+                    
 
-
-
-
-
+                    
 
                 </center>
             </p:layoutUnit>
